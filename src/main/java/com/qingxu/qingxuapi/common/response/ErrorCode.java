@@ -1,0 +1,29 @@
+package com.qingxu.qingxuapi.common.response;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+
+@Getter
+@RequiredArgsConstructor
+public enum ErrorCode {
+    SUCCESS("0", "操作成功", HttpStatus.OK),
+    AUTH_401("AUTH_401", "未登录或登录已过期，请重新登录", HttpStatus.UNAUTHORIZED),
+    AUTH_403("AUTH_403", "没有权限访问该资源", HttpStatus.FORBIDDEN),
+    AUTH_CAPTCHA_INVALID("AUTH_CAPTCHA_INVALID", "验证码错误或已过期，请刷新验证码", HttpStatus.BAD_REQUEST),
+    AUTH_BAD_CREDENTIALS("AUTH_BAD_CREDENTIALS", "用户名、密码或验证码错误", HttpStatus.BAD_REQUEST),
+    AUTH_ACCOUNT_LOCKED("AUTH_ACCOUNT_LOCKED", "账号已被锁定，请10分钟后重试或联系管理员", HttpStatus.LOCKED),
+    AUTH_ACCOUNT_INACTIVE("AUTH_ACCOUNT_INACTIVE", "账号未激活，请联系管理员审核激活", HttpStatus.FORBIDDEN),
+    AUTH_ACCOUNT_DISABLED("AUTH_ACCOUNT_DISABLED", "账号已被禁用，如需帮助请联系管理员", HttpStatus.FORBIDDEN),
+    VALIDATION_ERROR("VALIDATION_ERROR", "参数校验失败", HttpStatus.BAD_REQUEST),
+    NOT_FOUND("NOT_FOUND", "请求的接口不存在，请检查URL地址是否正确", HttpStatus.NOT_FOUND),
+    METHOD_NOT_ALLOWED("METHOD_NOT_ALLOWED", "请求方法不允许，请检查请求方式（GET/POST/PUT/DELETE）是否正确", HttpStatus.METHOD_NOT_ALLOWED),
+    MEDIA_TYPE_NOT_SUPPORTED("MEDIA_TYPE_NOT_SUPPORTED", "不支持的请求格式，请使用JSON格式提交数据", HttpStatus.UNSUPPORTED_MEDIA_TYPE),
+    REQUEST_BODY_INVALID("REQUEST_BODY_INVALID", "请求数据格式错误，请检查JSON格式是否正确", HttpStatus.BAD_REQUEST),
+    MISSING_PARAMETER("MISSING_PARAMETER", "缺少必填参数，请检查请求参数是否完整", HttpStatus.BAD_REQUEST),
+    SYSTEM_ERROR("SYSTEM_ERROR", "系统繁忙，请稍后重试", HttpStatus.INTERNAL_SERVER_ERROR);
+
+    private final String code;
+    private final String message;
+    private final HttpStatus httpStatus;
+}

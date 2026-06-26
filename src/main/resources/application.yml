@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: qingxu-api
+  profiles:
+    active: dev
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  session:
+    timeout: 2h
+
+server:
+  port: 8081
+  servlet:
+    session:
+      cookie:
+        name: QINGXU_SESSION
+        http-only: true
+        same-site: lax
+
+qingxu:
+  security:
+    cors:
+      allowed-origins:
+        - http://localhost:5173
+    csrf:
+      # Development only. Do not use this value in production.
+      enabled: false
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui/index.html
+
+logging:
+  level:
+    com.qingxu.qingxuapi: info
