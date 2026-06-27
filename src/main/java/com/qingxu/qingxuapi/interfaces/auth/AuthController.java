@@ -1,6 +1,7 @@
 package com.qingxu.qingxuapi.interfaces.auth;
 
 import com.qingxu.qingxuapi.application.auth.AuthApplicationService;
+import com.qingxu.qingxuapi.application.menu.MenuApplicationService;
 import com.qingxu.qingxuapi.common.audit.AuditEventType;
 import com.qingxu.qingxuapi.common.audit.AuditService;
 import com.qingxu.qingxuapi.common.response.ApiResponse;
@@ -10,8 +11,8 @@ import com.qingxu.qingxuapi.infrastructure.captcha.CaptchaService;
 import com.qingxu.qingxuapi.interfaces.auth.dto.CaptchaResponse;
 import com.qingxu.qingxuapi.interfaces.auth.dto.CurrentUserResponse;
 import com.qingxu.qingxuapi.interfaces.auth.dto.LoginRequest;
+import com.qingxu.qingxuapi.interfaces.auth.dto.MenuTreeResponse;
 import com.qingxu.qingxuapi.interfaces.auth.dto.PermissionResponse;
-import com.qingxu.qingxuapi.interfaces.auth.dto.RouterResponse;
 import com.qingxu.qingxuapi.interfaces.auth.dto.RegisterRequest;
 import com.qingxu.qingxuapi.interfaces.auth.dto.RegisterResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ public class AuthController {
 
     private final CaptchaService captchaService;
     private final AuthApplicationService authApplicationService;
+    private final MenuApplicationService menuApplicationService;
     private final ResponseFactory responseFactory;
     private final AuditService auditService;
 
@@ -78,8 +80,9 @@ public class AuthController {
     }
 
     @GetMapping("/routes")
-    public ApiResponse<List<RouterResponse>> routes() {
-        return responseFactory.success(List.of());
+    public ApiResponse<List<MenuTreeResponse>> routes(HttpServletRequest servletRequest) {
+        CurrentUserResponse currentUser = authApplicationService.currentUser(servletRequest);
+        return responseFactory.success(menuApplicationService.getUserMenus(currentUser.id()));
     }
 
     @GetMapping("/permissions/current")

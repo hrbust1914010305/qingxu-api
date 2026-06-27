@@ -21,6 +21,9 @@ public enum ErrorCode {
     MEDIA_TYPE_NOT_SUPPORTED("MEDIA_TYPE_NOT_SUPPORTED", "不支持的请求格式，请使用JSON格式提交数据", HttpStatus.UNSUPPORTED_MEDIA_TYPE),
     REQUEST_BODY_INVALID("REQUEST_BODY_INVALID", "请求数据格式错误，请检查JSON格式是否正确", HttpStatus.BAD_REQUEST),
     MISSING_PARAMETER("MISSING_PARAMETER", "缺少必填参数，请检查请求参数是否完整", HttpStatus.BAD_REQUEST),
+    USER_NOT_FOUND("USER_NOT_FOUND", "用户不存在", HttpStatus.NOT_FOUND),
+    OLD_PASSWORD_INCORRECT("OLD_PASSWORD_INCORRECT", "旧密码错误，请重新输入", HttpStatus.BAD_REQUEST),
+    PASSWORD_TOO_WEAK("PASSWORD_TOO_WEAK", "密码强度不足，必须包含大写字母、小写字母、数字和特殊字符（如!@#$%等）", HttpStatus.BAD_REQUEST),
     SYSTEM_ERROR("SYSTEM_ERROR", "系统繁忙，请稍后重试", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String code;
