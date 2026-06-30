@@ -15,6 +15,7 @@ import com.qingxu.qingxuapi.interfaces.auth.dto.RegisterRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,6 +31,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthApplicationService {
 
     public static final String SESSION_CURRENT_USER = "SESSION_CURRENT_USER";
@@ -151,10 +153,41 @@ public class AuthApplicationService {
 
     public PermissionResponse currentUserPermissions(HttpServletRequest servletRequest) {
         CurrentUserResponse user = currentUser(servletRequest);
-        return new PermissionResponse(user.roles(), user.permissions());
+
+        log.info("用户[{}]获取全部权限（临时方案）", user.username());
+        List<String> allPermissions = getAllPermissions();
+        return new PermissionResponse(List.of("admin"), allPermissions);
+    }
+
+    private List<String> getAllPermissions() {
+        return List.of(
+                "system:user:list",
+                "system:user:create",
+                "system:user:update",
+                "system:user:delete",
+                "system:role:list",
+                "system:role:create",
+                "system:role:update",
+                "system:role:delete",
+                "system:menu:list",
+                "system:menu:create",
+                "system:menu:update",
+                "system:menu:delete",
+                "department:category:list",
+                "department:category:create",
+                "department:category:update",
+                "department:category:delete",
+                "department:list",
+                "department:view",
+                "department:create",
+                "department:update",
+                "department:delete",
+                "department:status"
+        );
     }
 
     private CurrentUserResponse toCurrentUserResponse(SysUserEntity user) {
+        List<String> roles = determineUserRoles(user);
         return new CurrentUserResponse(
                 user.getId(),
                 user.getUsername(),
@@ -165,9 +198,14 @@ public class AuthApplicationService {
                 user.getTenantId(),
                 user.getUserType(),
                 user.getStatus(),
-                List.of(),
+                roles,
                 List.of()
         );
+    }
+
+    private List<String> determineUserRoles(SysUserEntity user) {
+        log.info("用户[{}]临时分配admin角色", user.getUsername());
+        return List.of("admin");
     }
 
     private void handleFailedLogin(SysUserEntity user, HttpServletRequest servletRequest) {

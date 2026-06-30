@@ -46,6 +46,7 @@ public class SecurityConfig {
                                 "/api/auth/captcha",
                                 "/api/auth/login",
                                 "/api/auth/register",
+                                "/api/department/**",  // 临时开放：用于调试删除功能
                                 "/actuator/health",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**"

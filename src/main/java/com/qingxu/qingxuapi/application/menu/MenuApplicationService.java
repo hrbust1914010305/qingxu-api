@@ -29,6 +29,12 @@ public class MenuApplicationService {
 
         List<MenuTreeResponse> systemChildren = new ArrayList<>();
         systemChildren.add(new MenuTreeResponse(
+                10L, 2L, "SystemDepartment", "department", "department/index", null,
+                "部门管理", "icon-apartment",
+                "MENU", 0,
+                true, "ACTIVE", false, true, new ArrayList<>()
+        ));
+        systemChildren.add(new MenuTreeResponse(
                 3L, 2L, "SystemUser", "user", "user/index", null,
                 "用户管理", "icon-user",
                 "MENU", 1,
