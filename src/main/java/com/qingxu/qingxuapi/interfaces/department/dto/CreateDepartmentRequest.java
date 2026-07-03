@@ -12,6 +12,8 @@ public record CreateDepartmentRequest(
         @Size(max = 64, message = "部门名称长度不能超过64个字符")
         String name,
 
+        Long leaderId,
+
         @Size(max = 64, message = "负责人长度不能超过64个字符")
         String leader,
 

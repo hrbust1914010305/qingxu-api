@@ -6,9 +6,11 @@ import com.qingxu.qingxuapi.common.response.ErrorCode;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysDepartmentCategoryEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysDepartmentEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysUserDepartmentEntity;
+import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysUserEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysDepartmentCategoryMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysDepartmentMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysUserDepartmentMapper;
+import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysUserMapper;
 import com.qingxu.qingxuapi.interfaces.department.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -31,6 +36,7 @@ public class DepartmentApplicationService {
     private final SysDepartmentMapper deptMapper;
     private final SysDepartmentCategoryMapper categoryMapper;
     private final SysUserDepartmentMapper userDeptMapper;
+    private final SysUserMapper userMapper;
 
     @Autowired
     @Lazy
@@ -141,7 +147,8 @@ public class DepartmentApplicationService {
 
         log.info("部门树查询完成，共{}个节点", allDepts.size());
 
-        return buildTree(allDepts, 0L);
+        Map<Long, List<LeaderUser>> leaderMap = buildLeaderMap(allDepts);
+        return buildTree(allDepts, 0L, leaderMap);
     }
 
     public DepartmentResponse getDetail(Long id) {
@@ -176,6 +183,7 @@ public class DepartmentApplicationService {
         entity.setParentId(request.parentId());
         entity.setName(request.name());
         entity.setDeptType("DEPARTMENT");
+        entity.setLeaderId(request.leaderId());
         entity.setLeader(request.leader());
         entity.setPhone(request.phone());
         entity.setEmail(request.email());
@@ -229,6 +237,9 @@ public class DepartmentApplicationService {
             entity.setStatus(request.status());
         }
 
+        if (request.leaderId() != null) {
+            entity.setLeaderId(request.leaderId());
+        }
         if (request.leader() != null) {
             entity.setLeader(request.leader());
         }
@@ -497,13 +508,13 @@ public class DepartmentApplicationService {
 
     // ========== 私有方法：基础工具方法 ==========
 
-    private List<DepartmentTreeResponse> buildTree(List<SysDepartmentEntity> allDepts, Long parentId) {
+    private List<DepartmentTreeResponse> buildTree(List<SysDepartmentEntity> allDepts, Long parentId, Map<Long, List<LeaderUser>> leaderMap) {
         List<DepartmentTreeResponse> result = new ArrayList<>();
-        
+
         for (SysDepartmentEntity dept : allDepts) {
             if (dept.getParentId().equals(parentId)) {
-                List<DepartmentTreeResponse> children = buildTree(allDepts, dept.getId());
-                
+                List<DepartmentTreeResponse> children = buildTree(allDepts, dept.getId(), leaderMap);
+
                 DepartmentTreeResponse treeNode = new DepartmentTreeResponse(
                         dept.getId(),
                         dept.getTenantId(),
@@ -512,6 +523,8 @@ public class DepartmentApplicationService {
                         dept.getDeptType(),
                         dept.getCategoryId(),
                         dept.getLeader(),
+                        dept.getLeaderId(),
+                        leaderMap.getOrDefault(dept.getId(), List.of()),
                         dept.getPhone(),
                         dept.getEmail(),
                         dept.getSortOrder(),
@@ -523,7 +536,41 @@ public class DepartmentApplicationService {
                 result.add(treeNode);
             }
         }
-        
+
+        return result;
+    }
+
+    private Map<Long, List<LeaderUser>> buildLeaderMap(List<SysDepartmentEntity> allDepts) {
+        List<Long> leaderIds = allDepts.stream()
+                .map(SysDepartmentEntity::getLeaderId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+
+        if (leaderIds.isEmpty()) {
+            return Map.of();
+        }
+
+        List<SysUserEntity> users = userMapper.selectBatchIds(leaderIds);
+        Map<Long, SysUserEntity> userMap = users.stream()
+                .collect(Collectors.toMap(SysUserEntity::getId, u -> u));
+
+        Map<Long, List<LeaderUser>> result = new HashMap<>();
+        for (SysDepartmentEntity dept : allDepts) {
+            if (dept.getLeaderId() != null) {
+                SysUserEntity user = userMap.get(dept.getLeaderId());
+                if (user != null) {
+                    result.put(dept.getId(), List.of(new LeaderUser(
+                            user.getId(),
+                            user.getUsername(),
+                            user.getRealname(),
+                            user.getNickname(),
+                            user.getPhone(),
+                            user.getEmail()
+                    )));
+                }
+            }
+        }
         return result;
     }
 
@@ -574,6 +621,21 @@ public class DepartmentApplicationService {
     }
 
     private DepartmentResponse convertToResponse(SysDepartmentEntity entity) {
+        List<LeaderUser> leaderUsers = List.of();
+        if (entity.getLeaderId() != null) {
+            SysUserEntity user = userMapper.selectById(entity.getLeaderId());
+            if (user != null) {
+                leaderUsers = List.of(new LeaderUser(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getRealname(),
+                        user.getNickname(),
+                        user.getPhone(),
+                        user.getEmail()
+                ));
+            }
+        }
+
         return new DepartmentResponse(
                 entity.getId(),
                 entity.getTenantId(),
@@ -582,6 +644,8 @@ public class DepartmentApplicationService {
                 entity.getDeptType(),
                 entity.getCategoryId(),
                 entity.getLeader(),
+                entity.getLeaderId(),
+                leaderUsers,
                 entity.getPhone(),
                 entity.getEmail(),
                 entity.getSortOrder(),

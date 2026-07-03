@@ -1,5 +1,7 @@
 package com.qingxu.qingxuapi.interfaces.auth.dto;
 
+import java.util.List;
+
 public record CurrentUserResponse(
         Long id,
         String username,
@@ -10,7 +12,8 @@ public record CurrentUserResponse(
         String tenantId,
         String userType,
         String status,
-        java.util.List<String> roles,
-        java.util.List<String> permissions
+        Boolean needPasswordChange,
+        List<String> roles,
+        List<String> permissions
 ) {
 }

@@ -26,6 +26,7 @@ public class SysDepartmentEntity {
     private Integer sortOrder;
     private String status;
     private String description;
+    private Long leaderId;
     private Long createdBy;
     private LocalDateTime createdAt;
     private Long updatedBy;

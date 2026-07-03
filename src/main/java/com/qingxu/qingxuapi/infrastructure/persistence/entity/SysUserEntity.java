@@ -24,6 +24,7 @@ public class SysUserEntity {
     private String passwordHash;
     private String userType;
     private String status;
+    private Boolean needPasswordChange;
     private Integer failedLoginCount;
     private LocalDateTime lockedUntil;
     private LocalDateTime lastLoginAt;

@@ -1,5 +1,6 @@
 package com.qingxu.qingxuapi.infrastructure.security;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Getter
+@EqualsAndHashCode(of = "id")
 @RequiredArgsConstructor
 public class QingxuUserPrincipal implements UserDetails {
 
