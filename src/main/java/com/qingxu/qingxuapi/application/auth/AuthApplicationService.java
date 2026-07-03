@@ -65,6 +65,17 @@ public class AuthApplicationService {
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
 
+    private static final List<String> MENU_PERMISSION_CODES = List.of(
+            "system:menu:list",
+            "system:menu:create",
+            "system:menu:update",
+            "system:menu:delete"
+    );
+
+    private static final List<GrantedAuthority> MENU_AUTHORITIES = MENU_PERMISSION_CODES.stream()
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
+
     private final CaptchaService captchaService;
     private final PasswordEncoder passwordEncoder;
     private final AuditService auditService;
@@ -113,6 +124,7 @@ public class AuthApplicationService {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList()));
         authorities.addAll(DEPT_AUTHORITIES);
+        authorities.addAll(MENU_AUTHORITIES);
 
         CurrentUserResponse currentUserResponse = toCurrentUserResponse(user, roleNames, permissionCodes);
 
@@ -224,6 +236,7 @@ public class AuthApplicationService {
 
         List<String> allPermissions = new ArrayList<>(user.permissions());
         allPermissions.addAll(DEPT_PERMISSION_CODES);
+        allPermissions.addAll(MENU_PERMISSION_CODES);
 
         return new PermissionResponse(user.roles(), allPermissions);
     }

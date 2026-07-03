@@ -1,9 +1,9 @@
-package com.qingxu.qingxuapi.interfaces.auth.dto;
+package com.qingxu.qingxuapi.interfaces.menu.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record MenuTreeResponse(
+public record MenuTreeNode(
         Long id,
         Long parentId,
         String name,
@@ -21,6 +21,6 @@ public record MenuTreeResponse(
         Boolean isCache,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        List<MenuTreeResponse> children
+        List<MenuTreeNode> children
 ) {
 }

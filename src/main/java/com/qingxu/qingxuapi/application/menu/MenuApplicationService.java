@@ -1,86 +1,298 @@
 package com.qingxu.qingxuapi.application.menu;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.qingxu.qingxuapi.common.exception.BusinessException;
+import com.qingxu.qingxuapi.common.response.ErrorCode;
+import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysMenuEntity;
+import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysMenuMapper;
 import com.qingxu.qingxuapi.interfaces.auth.dto.MenuTreeResponse;
+import com.qingxu.qingxuapi.interfaces.menu.dto.*;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class MenuApplicationService {
 
+    private final SysMenuMapper menuMapper;
+    private final MenuTreeHelper menuTreeHelper;
+
+    public List<MenuTreeNode> getMenuTree(MenuTreeQueryRequest request) {
+        if (request != null && hasFilter(request)) {
+            List<SysMenuEntity> list = queryFilteredMenus(request);
+            return list.stream().map(this::convertToFlatMenuTreeNode).toList();
+        }
+        List<SysMenuEntity> allMenus = queryAllMenus();
+        return menuTreeHelper.buildTree(allMenus).stream()
+                .map(this::convertToMenuTreeNode)
+                .toList();
+    }
+
+    private List<SysMenuEntity> queryAllMenus() {
+        return menuMapper.selectList(
+                new LambdaQueryWrapper<SysMenuEntity>()
+                        .orderByAsc(SysMenuEntity::getSortOrder));
+    }
+
+    private boolean hasFilter(MenuTreeQueryRequest request) {
+        return StringUtils.hasText(request.getMenuType())
+                || StringUtils.hasText(request.getName())
+                || StringUtils.hasText(request.getTitle())
+                || StringUtils.hasText(request.getStatus())
+                || request.getVisible() != null;
+    }
+
+    private List<SysMenuEntity> queryFilteredMenus(MenuTreeQueryRequest request) {
+        LambdaQueryWrapper<SysMenuEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByAsc(SysMenuEntity::getSortOrder);
+
+        if (StringUtils.hasText(request.getMenuType())) {
+            wrapper.eq(SysMenuEntity::getMenuType, request.getMenuType());
+        }
+        if (StringUtils.hasText(request.getName())) {
+            wrapper.like(SysMenuEntity::getName, request.getName());
+        }
+        if (StringUtils.hasText(request.getTitle())) {
+            wrapper.like(SysMenuEntity::getTitle, request.getTitle());
+        }
+        if (StringUtils.hasText(request.getStatus())) {
+            wrapper.eq(SysMenuEntity::getStatus, request.getStatus());
+        }
+        if (request.getVisible() != null) {
+            wrapper.eq(SysMenuEntity::getVisible, request.getVisible());
+        }
+        if (request.getParentId() != null) {
+            wrapper.eq(SysMenuEntity::getParentId, request.getParentId());
+        }
+
+        return menuMapper.selectList(wrapper);
+    }
+
+    private MenuTreeNode convertToFlatMenuTreeNode(SysMenuEntity menu) {
+        return new MenuTreeNode(
+                menu.getId(), menu.getParentId(),
+                menu.getName(), menu.getPath(), menu.getComponent(), menu.getRedirect(),
+                menu.getTitle(), menu.getIcon(), menu.getPermission(), menu.getMenuType(),
+                menu.getSortOrder(), menu.getVisible(), menu.getStatus(),
+                menu.getIsExternal(), menu.getIsCache(),
+                menu.getCreatedAt(), menu.getUpdatedAt(), List.of()
+        );
+    }
+
+    /**
+     * 鑾峰彇鑿滃崟鍒楄〃锛堝钩閾猴級
+     */
+    public Page<SysMenuEntity> getMenuPage(MenuQueryRequest request) {
+        LambdaQueryWrapper<SysMenuEntity> wrapper = new LambdaQueryWrapper<>();
+
+        if (StringUtils.hasText(request.getName())) {
+            wrapper.like(SysMenuEntity::getName, request.getName());
+        }
+        if (StringUtils.hasText(request.getTitle())) {
+            wrapper.like(SysMenuEntity::getTitle, request.getTitle());
+        }
+        if (request.getStatus() != null) {
+            wrapper.eq(SysMenuEntity::getStatus, request.getStatus());
+        }
+        if (request.getMenuType() != null) {
+            wrapper.eq(SysMenuEntity::getMenuType, request.getMenuType());
+        }
+        if (request.getParentId() != null) {
+            wrapper.eq(SysMenuEntity::getParentId, request.getParentId());
+        }
+
+        wrapper.orderByAsc(SysMenuEntity::getSortOrder);
+
+        return menuMapper.selectPage(
+                new Page<>(request.getPage(), request.getPageSize()),
+                wrapper
+        );
+    }
+
+    /**
+     * 鑾峰彇鑿滃崟璇︽儏
+     */
+    public SysMenuEntity getMenuDetail(Long id) {
+        SysMenuEntity menu = menuMapper.selectById(id);
+        if (menu == null) {
+            throw new BusinessException(ErrorCode.MENU_NOT_FOUND);
+        }
+        return menu;
+    }
+
+    /**
+     * 鍒涘缓鑿滃崟
+     */
+    @Transactional
+    public MenuCreateResponse createMenu(MenuCreateRequest request) {
+        validateParentMenu(request.getParentId(), request.getMenuType());
+        validateMenuNameUnique(request.getName(), null);
+        validateMenuTypeConstraints(request.getMenuType(), request.getComponent());
+
+        SysMenuEntity menu = new SysMenuEntity();
+        BeanUtils.copyProperties(request, menu);
+        menu.setCreatedAt(LocalDateTime.now());
+        menu.setUpdatedAt(LocalDateTime.now());
+        menuMapper.insert(menu);
+
+        return new MenuCreateResponse(menu.getId());
+    }
+
+    /**
+     * 鏇存柊鑿滃崟
+     */
+    @Transactional
+    public void updateMenu(Long id, MenuUpdateRequest request) {
+        SysMenuEntity existing = menuMapper.selectById(id);
+        if (existing == null) {
+            throw new BusinessException(ErrorCode.MENU_NOT_FOUND);
+        }
+
+        // Home 鑿滃崟淇濇姢
+        if ("Home".equals(existing.getName()) && existing.getParentId() == 0L) {
+            if (request.getStatus() != null && !request.getStatus().equals(existing.getStatus())) {
+                throw new BusinessException(ErrorCode.MENU_HOME_CANNOT_MODIFY_STATUS);
+            }
+        }
+
+        validateParentMenu(request.getParentId(), request.getMenuType());
+        validateMenuNameUnique(request.getName(), id);
+        validateMenuTypeConstraints(request.getMenuType(), request.getComponent());
+
+        BeanUtils.copyProperties(request, existing);
+        existing.setUpdatedAt(LocalDateTime.now());
+        menuMapper.updateById(existing);
+    }
+
+    /**
+     * 鍒犻櫎鑿滃崟
+     */
+    @Transactional
+    public void deleteMenu(Long id) {
+        SysMenuEntity existing = menuMapper.selectById(id);
+        if (existing == null) {
+            throw new BusinessException(ErrorCode.MENU_NOT_FOUND);
+        }
+
+        // Home 鑿滃崟淇濇姢
+        if ("Home".equals(existing.getName()) && existing.getParentId() == 0L) {
+            throw new BusinessException(ErrorCode.MENU_HOME_CANNOT_DELETE);
+        }
+
+        // 检查是否有子菜单
+        long childCount = menuMapper.countByParentId(id);
+        if (childCount > 0) {
+            throw new BusinessException(ErrorCode.MENU_HAS_CHILDREN);
+        }
+
+        menuMapper.deleteById(id);
+    }
+
+    /**
+     * 获取用户路由（登录后下发，不包含按钮）
+     */
+    public List<MenuTreeResponse> getUserRoutes(Long userId) {
+        // TODO: 根据用户角色过滤菜单
+        return getRouteTreeWithoutButtons();
+    }
+
+    /**
+     * 获取用户菜单（登录后下发，不包含按钮）
+     */
     public List<MenuTreeResponse> getUserMenus(Long userId) {
-        return getMockMenuTree();
+        // TODO: 根据用户角色过滤菜单
+        return getRouteTreeWithoutButtons();
     }
 
+    /**
+     * 获取完整菜单树（登录后下发，包含所有类型）
+     */
     public List<MenuTreeResponse> getFullMenuTree() {
-        return getMockMenuTree();
+        List<SysMenuEntity> allMenus = menuMapper.selectList(
+                new LambdaQueryWrapper<SysMenuEntity>()
+                        .orderByAsc(SysMenuEntity::getSortOrder)
+        );
+        return menuTreeHelper.buildTree(allMenus);
     }
 
-    private List<MenuTreeResponse> getMockMenuTree() {
-        List<MenuTreeResponse> menus = new ArrayList<>();
+    /**
+     * 获取路由树（不包含按钮，用于前端路由和导航）
+     */
+    private List<MenuTreeResponse> getRouteTreeWithoutButtons() {
+        List<SysMenuEntity> allMenus = menuMapper.selectList(
+                new LambdaQueryWrapper<SysMenuEntity>()
+                        .orderByAsc(SysMenuEntity::getSortOrder)
+        );
+        return menuTreeHelper.buildRouteTree(allMenus);
+    }
 
-        menus.add(new MenuTreeResponse(
-                1L, 0L, "Home", "/home", "home/index", null,
-                "首页", "icon-home",
-                "MENU", 1,
-                true, "ACTIVE", false, true, new ArrayList<>()
-        ));
+    // ========== 绉佹湁鏂规硶锛氭牎楠?==========
 
-        List<MenuTreeResponse> systemChildren = new ArrayList<>();
-        systemChildren.add(new MenuTreeResponse(
-                10L, 2L, "SystemDepartment", "department", "department/index", null,
-                "部门管理", "icon-apartment",
-                "MENU", 0,
-                true, "ACTIVE", false, true, new ArrayList<>()
-        ));
-        systemChildren.add(new MenuTreeResponse(
-                3L, 2L, "SystemUser", "user", "user/index", null,
-                "用户管理", "icon-user",
-                "MENU", 1,
-                true, "ACTIVE", false, true, new ArrayList<>()
-        ));
-        systemChildren.add(new MenuTreeResponse(
-                4L, 2L, "SystemRole", "role", "role/index", null,
-                "角色管理", "icon-team",
-                "MENU", 2,
-                true, "ACTIVE", false, true, new ArrayList<>()
-        ));
-        systemChildren.add(new MenuTreeResponse(
-                5L, 2L, "SystemPermission", "permission", "permission/index", null,
-                "权限管理", "icon-lock",
-                "MENU", 3,
-                true, "ACTIVE", false, true, new ArrayList<>()
-        ));
+    private void validateParentMenu(Long parentId, String childMenuType) {
+        if (parentId == null || parentId == 0L) return;
 
-        menus.add(new MenuTreeResponse(
-                2L, 0L, "System", "/system", "", "/system/user",
-                "系统管理", "icon-settings",
-                "DIRECTORY", 2,
-                true, "ACTIVE", false, true, systemChildren
-        ));
+        SysMenuEntity parent = menuMapper.selectById(parentId);
+        if (parent == null) {
+            throw new BusinessException(ErrorCode.MENU_PARENT_NOT_FOUND);
+        }
 
-        List<MenuTreeResponse> knowledgeChildren = new ArrayList<>();
-        knowledgeChildren.add(new MenuTreeResponse(
-                7L, 6L, "KnowledgeList", "list", "knowledge/list/index", null,
-                "知识库列表", "icon-list",
-                "MENU", 1,
-                true, "ACTIVE", false, true, new ArrayList<>()
-        ));
-        knowledgeChildren.add(new MenuTreeResponse(
-                8L, 6L, "DocumentList", "document", "knowledge/document/index", null,
-                "文档管理", "icon-file",
-                "MENU", 2,
-                true, "ACTIVE", false, true, new ArrayList<>()
-        ));
+        String parentType = parent.getMenuType();
 
-        menus.add(new MenuTreeResponse(
-                6L, 0L, "Knowledge", "/knowledge", "", "/knowledge/list",
-                "知识库管理", "icon-folder",
-                "DIRECTORY", 3,
-                true, "ACTIVE", false, true, knowledgeChildren
-        ));
+        if ("BUTTON".equals(parentType)) {
+            throw new BusinessException(ErrorCode.MENU_PARENT_TYPE_ERROR);
+        }
 
-        return menus;
+        if ("MENU".equals(parentType) && !"BUTTON".equals(childMenuType)) {
+            throw new BusinessException(ErrorCode.MENU_PARENT_TYPE_ERROR);
+        }
+    }
+
+    private void validateMenuNameUnique(String name, Long excludeId) {
+        SysMenuEntity existing = menuMapper.findByName(name);
+        if (existing != null && !existing.getId().equals(excludeId)) {
+            throw new BusinessException(ErrorCode.MENU_NAME_DUPLICATE);
+        }
+    }
+
+    private void validateMenuTypeConstraints(String menuType, String component) {
+        if ("MENU".equals(menuType)
+                && (component == null || component.isBlank())) {
+            throw new BusinessException(ErrorCode.MENU_COMPONENT_REQUIRED);
+        }
+    }
+
+    private MenuTreeNode convertToMenuTreeNode(MenuTreeResponse response) {
+        List<MenuTreeNode> children = response.children() != null
+                ? response.children().stream().map(this::convertToMenuTreeNode).toList()
+                : List.of();
+
+        return new MenuTreeNode(
+                response.id(),
+                response.parentId(),
+                response.name(),
+                response.path(),
+                response.component(),
+                response.redirect(),
+                response.title(),
+                response.icon(), response.permission(), response.menuType(),
+                response.sortOrder(),
+                response.visible(),
+                response.status(),
+                response.isExternal(),
+                response.isCache(),
+                response.createdAt(),
+                response.updatedAt(),
+                children
+        );
     }
 }
