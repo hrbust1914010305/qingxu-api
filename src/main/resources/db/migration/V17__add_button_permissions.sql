@@ -3,63 +3,54 @@
 
 -- ========== 部门管理按钮权限 ==========
 INSERT INTO sys_permission (code, name, permission_type, created_at, updated_at, deleted)
-VALUES ('system:department:add', '新增部门', 'BUTTON', now(), now(), 0)
-ON CONFLICT (code) DO NOTHING;
+VALUES ('system:department:add', '新增部门', 'BUTTON', now(), now(), 0);
 
 INSERT INTO sys_permission (code, name, permission_type, created_at, updated_at, deleted)
-VALUES ('system:department:edit', '编辑部门', 'BUTTON', now(), now(), 0)
-ON CONFLICT (code) DO NOTHING;
+VALUES ('system:department:edit', '编辑部门', 'BUTTON', now(), now(), 0);
 
 INSERT INTO sys_permission (code, name, permission_type, created_at, updated_at, deleted)
-VALUES ('system:department:delete', '删除部门', 'BUTTON', now(), now(), 0)
-ON CONFLICT (code) DO NOTHING;
+VALUES ('system:department:delete', '删除部门', 'BUTTON', now(), now(), 0);
 
 INSERT INTO sys_permission (code, name, permission_type, created_at, updated_at, deleted)
-VALUES ('system:department:view', '查看部门详情', 'BUTTON', now(), now(), 0)
-ON CONFLICT (code) DO NOTHING;
+VALUES ('system:department:view', '查看部门详情', 'BUTTON', now(), now(), 0);
 
 INSERT INTO sys_permission (code, name, permission_type, created_at, updated_at, deleted)
-VALUES ('system:department:assignLeader', '分配负责人', 'BUTTON', now(), now(), 0)
-ON CONFLICT (code) DO NOTHING;
+VALUES ('system:department:assignLeader', '分配负责人', 'BUTTON', now(), now(), 0);
 
 -- ========== 用户管理按钮权限 ==========
 INSERT INTO sys_permission (code, name, permission_type, created_at, updated_at, deleted)
-VALUES ('system:user:add', '新增用户', 'BUTTON', now(), now(), 0)
-ON CONFLICT (code) DO NOTHING;
+VALUES ('system:user:add', '新增用户', 'BUTTON', now(), now(), 0);
 
 INSERT INTO sys_permission (code, name, permission_type, created_at, updated_at, deleted)
-VALUES ('system:user:edit', '编辑用户', 'BUTTON', now(), now(), 0)
-ON CONFLICT (code) DO NOTHING;
+VALUES ('system:user:edit', '编辑用户', 'BUTTON', now(), now(), 0);
 
 INSERT INTO sys_permission (code, name, permission_type, created_at, updated_at, deleted)
-VALUES ('system:user:resetPassword', '重置密码', 'BUTTON', now(), now(), 0)
-ON CONFLICT (code) DO NOTHING;
+VALUES ('system:user:resetPassword', '重置密码', 'BUTTON', now(), now(), 0);
 
 INSERT INTO sys_permission (code, name, permission_type, created_at, updated_at, deleted)
-VALUES ('system:user:assignRole', '分配角色', 'BUTTON', now(), now(), 0)
-ON CONFLICT (code) DO NOTHING;
+VALUES ('system:user:assignRole', '分配角色', 'BUTTON', now(), now(), 0);
 
 -- ========== 菜单管理按钮权限 ==========
 INSERT INTO sys_permission (code, name, permission_type, created_at, updated_at, deleted)
-VALUES ('system:menu:add', '新增菜单', 'BUTTON', now(), now(), 0)
-ON CONFLICT (code) DO NOTHING;
+VALUES ('system:menu:add', '新增菜单', 'BUTTON', now(), now(), 0);
 
 INSERT INTO sys_permission (code, name, permission_type, created_at, updated_at, deleted)
-VALUES ('system:menu:edit', '编辑菜单', 'BUTTON', now(), now(), 0)
-ON CONFLICT (code) DO NOTHING;
+VALUES ('system:menu:edit', '编辑菜单', 'BUTTON', now(), now(), 0);
 
 INSERT INTO sys_permission (code, name, permission_type, created_at, updated_at, deleted)
-VALUES ('system:menu:delete', '删除菜单', 'BUTTON', now(), now(), 0)
-ON CONFLICT (code) DO NOTHING;
+VALUES ('system:menu:delete', '删除菜单', 'BUTTON', now(), now(), 0);
 
 INSERT INTO sys_permission (code, name, permission_type, created_at, updated_at, deleted)
-VALUES ('system:menu:sort', '排序调整', 'BUTTON', now(), now(), 0)
-ON CONFLICT (code) DO NOTHING;
+VALUES ('system:menu:sort', '排序调整', 'BUTTON', now(), now(), 0);
 
 INSERT INTO sys_permission (code, name, permission_type, created_at, updated_at, deleted)
-VALUES ('system:menu:toggleVisible', '显示/隐藏菜单', 'BUTTON', now(), now(), 0)
-ON CONFLICT (code) DO NOTHING;
+VALUES ('system:menu:toggleVisible', '显示/隐藏菜单', 'BUTTON', now(), now(), 0);
 
+
+-- ========== 为管理员角色分配所有按钮权限 ==========
+
+-- ========== 角色管理按钮权限 ==========
+-- 已在后续迁移 V22 中添加
 
 -- ========== 为管理员角色分配所有按钮权限 ==========
 -- 部门管理按钮权限

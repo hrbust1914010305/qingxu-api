@@ -8,6 +8,7 @@ import com.qingxu.qingxuapi.common.response.PageResponse;
 import com.qingxu.qingxuapi.common.response.ResponseFactory;
 import com.qingxu.qingxuapi.interfaces.auth.dto.CurrentUserResponse;
 import com.qingxu.qingxuapi.interfaces.user.dto.*;
+import com.qingxu.qingxuapi.interfaces.user.dto.AssignRolesBatchRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -121,4 +122,22 @@ public class UserController {
         userApplicationService.changePassword(currentUser.id(), request, currentUser.id(), currentUser.username(), servletRequest);
         return responseFactory.success(null);
     }
-}
+
+    /**
+     * 批量为用户分配角色（或清空角色）。
+     * 使用权限 {@code system:user:assignRole}。
+     */
+    @PutMapping("/roles")
+    @PreAuthorize("hasAuthority('system:user:assignRole')")
+    public ApiResponse<Void> assignRoles(@Valid @RequestBody AssignRolesBatchRequest request,
+                                          HttpServletRequest servletRequest) {
+        CurrentUserResponse currentUser = authApplicationService.currentUser(servletRequest);
+        userApplicationService.assignRolesBatch(request.userIds(),
+                request.roleIds(),
+                currentUser.id(),
+                currentUser.username(),
+                servletRequest);
+        return responseFactory.success(null);
+    }
+    }
+

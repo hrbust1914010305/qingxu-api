@@ -9,8 +9,11 @@ public record MenuCreateRequest(
         @NotBlank(message = "菜单名称不能为空")
         String name,
 
-        @NotBlank(message = "路由路径不能为空")
-        String path,
+    /**
+     * 对于 BUTTON 类型的菜单可以为空，后端会自动填充空字符串。
+     * 对于 MENU、DIRECTORY 必须非空，由 validatePath 方法统一校验。
+     */
+    String path,
 
         String component,
 

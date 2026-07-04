@@ -8,17 +8,11 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("sys_role")
-public class SysRoleEntity {
+@TableName("sys_role_permission")
+public class SysRolePermissionEntity {
     @TableId(type = IdType.AUTO)
     private Long id;
-    private String code;
-    private String name;
-    private String status;
-    private String description;
-    private String remark;
-    private Integer sortOrder;
+    private Long roleId;
+    private Long permissionId;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
 }

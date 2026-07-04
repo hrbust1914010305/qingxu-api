@@ -338,6 +338,65 @@ public class UserApplicationService {
         auditService.record(AuditEventType.USER_STATUS_CHANGE, true, currentUsername, currentUserId, servletRequest);
     }
 
+    /**
+     * 批量为一组用户分配角色（或清除角色）。
+     *
+     * @param userIds        需要分配角色的用户 ID 列表（不能为空）
+     * @param roleIds        角色 ID 列表，若为空则表示清除所有角色
+     * @param currentUserId  操作人的用户 ID
+     * @param currentUsername 操作人用户名（审计用）
+     * @param servletRequest 当前请求对象（审计用）
+     */
+    @Transactional
+    public void assignRolesBatch(List<Long> userIds,
+                                 List<Long> roleIds,
+                                 Long currentUserId,
+                                 String currentUsername,
+                                 HttpServletRequest servletRequest) {
+        // 1. 参数校验
+        if (userIds == null || userIds.isEmpty()) {
+            throw new BusinessException(ErrorCode.VALIDATION_ERROR, "用户ID列表不能为空");
+        }
+        // 2. 校验所有用户是否存在
+        List<SysUserEntity> users = userMapper.selectBatchIds(userIds);
+        if (users.size() != userIds.size()) {
+            // 找出不存在的 ID，提供更友好的错误信息
+            List<Long> found = users.stream().map(SysUserEntity::getId).toList();
+            List<Long> missing = userIds.stream().filter(id -> !found.contains(id)).toList();
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND, "用户不存在: " + missing);
+        }
+        // 3. 若提供了角色列表，校验角色是否全部存在
+        if (roleIds != null && !roleIds.isEmpty()) {
+            List<SysRoleEntity> roles = roleMapper.selectList(new LambdaQueryWrapper<SysRoleEntity>()
+                    .in(SysRoleEntity::getId, roleIds));
+            if (roles.size() != roleIds.size()) {
+                List<Long> found = roles.stream().map(SysRoleEntity::getId).toList();
+                List<Long> missing = roleIds.stream().filter(r -> !found.contains(r)).toList();
+                throw new BusinessException(ErrorCode.ROLE_NOT_FOUND, "角色不存在: " + missing);
+            }
+        }
+        // 4. 删除旧的用户‑角色关联（一次性删除所有目标用户的记录）
+        LambdaQueryWrapper<SysUserRoleEntity> deleteWrapper = new LambdaQueryWrapper<>();
+        deleteWrapper.in(SysUserRoleEntity::getUserId, userIds);
+        userRoleMapper.delete(deleteWrapper);
+        // 5. 如果 roleIds 为非空，则批量插入新关联
+        if (roleIds != null && !roleIds.isEmpty()) {
+            for (Long uid : userIds) {
+                for (Long rid : roleIds) {
+                    SysUserRoleEntity userRole = new SysUserRoleEntity();
+                    userRole.setUserId(uid);
+                    userRole.setRoleId(rid);
+                    userRole.setCreatedAt(LocalDateTime.now());
+                    userRoleMapper.insert(userRole);
+                }
+            }
+        }
+        // 6. 记录审计日志（使用 USER_UPDATE 统一审计）
+        auditService.record(AuditEventType.USER_UPDATE, true, currentUsername, currentUserId, servletRequest);
+    }
+
+    // ========== 用户偏好私有方法 =========
+
     @Transactional
     public ResetPasswordResult resetPassword(Long id, Long currentUserId, String currentUsername, HttpServletRequest servletRequest) {
         SysUserEntity user = userMapper.selectById(id);

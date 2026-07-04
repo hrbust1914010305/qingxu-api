@@ -5,7 +5,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qingxu.qingxuapi.common.exception.BusinessException;
 import com.qingxu.qingxuapi.common.response.ErrorCode;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysMenuEntity;
+import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysRoleEntity;
+import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysRoleMenuEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysMenuMapper;
+import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysRoleMapper;
+import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysRoleMenuMapper;
 import com.qingxu.qingxuapi.interfaces.auth.dto.MenuTreeResponse;
 import com.qingxu.qingxuapi.interfaces.menu.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,8 @@ import java.util.stream.Collectors;
 public class MenuApplicationService {
 
     private final SysMenuMapper menuMapper;
+    private final SysRoleMapper roleMapper;
+    private final SysRoleMenuMapper roleMenuMapper;
     private final MenuTreeHelper menuTreeHelper;
 
     public List<MenuTreeNode> getMenuTree(MenuTreeQueryRequest request) {
@@ -138,9 +144,13 @@ public class MenuApplicationService {
         validateParentMenu(request.getParentId(), request.getMenuType());
         validateMenuNameUnique(request.getName(), null);
         validateMenuTypeConstraints(request.getMenuType(), request.getComponent());
+        validatePath(request.getMenuType(), request.getPath());
 
         SysMenuEntity menu = new SysMenuEntity();
         BeanUtils.copyProperties(request, menu);
+        if ("BUTTON".equals(request.getMenuType()) && menu.getPath() == null) {
+            menu.setPath("");
+        }
         menu.setCreatedAt(LocalDateTime.now());
         menu.setUpdatedAt(LocalDateTime.now());
         menuMapper.insert(menu);
@@ -168,8 +178,12 @@ public class MenuApplicationService {
         validateParentMenu(request.getParentId(), request.getMenuType());
         validateMenuNameUnique(request.getName(), id);
         validateMenuTypeConstraints(request.getMenuType(), request.getComponent());
+        validatePath(request.getMenuType(), request.getPath());
 
         BeanUtils.copyProperties(request, existing);
+        if ("BUTTON".equals(request.getMenuType()) && existing.getPath() == null) {
+            existing.setPath("");
+        }
         existing.setUpdatedAt(LocalDateTime.now());
         menuMapper.updateById(existing);
     }
@@ -202,16 +216,66 @@ public class MenuApplicationService {
      * 获取用户路由（登录后下发，不包含按钮）
      */
     public List<MenuTreeResponse> getUserRoutes(Long userId) {
-        // TODO: 根据用户角色过滤菜单
-        return getRouteTreeWithoutButtons();
+        Set<Long> allowedMenuIds = getUserAllowedMenuIds(userId);
+        return getRouteTreeFiltered(allowedMenuIds);
     }
 
     /**
      * 获取用户菜单（登录后下发，不包含按钮）
      */
     public List<MenuTreeResponse> getUserMenus(Long userId) {
-        // TODO: 根据用户角色过滤菜单
-        return getRouteTreeWithoutButtons();
+        Set<Long> allowedMenuIds = getUserAllowedMenuIds(userId);
+        return getRouteTreeFiltered(allowedMenuIds);
+    }
+
+    private Set<Long> getUserAllowedMenuIds(Long userId) {
+        List<SysRoleEntity> roles = roleMapper.selectByUserId(userId);
+        if (roles.isEmpty()) {
+            return Set.of();
+        }
+        List<Long> roleIds = roles.stream().map(SysRoleEntity::getId).toList();
+        List<SysRoleMenuEntity> roleMenus = roleMenuMapper.selectList(
+                new LambdaQueryWrapper<SysRoleMenuEntity>()
+                        .in(SysRoleMenuEntity::getRoleId, roleIds));
+        return roleMenus.stream().map(SysRoleMenuEntity::getMenuId).collect(Collectors.toSet());
+    }
+
+    private List<MenuTreeResponse> getRouteTreeFiltered(Set<Long> allowedMenuIds) {
+        List<SysMenuEntity> allMenus = menuMapper.selectList(
+                new LambdaQueryWrapper<SysMenuEntity>()
+                        .orderByAsc(SysMenuEntity::getSortOrder));
+        if (allowedMenuIds.isEmpty()) {
+            return menuTreeHelper.buildRouteTree(allMenus);
+        }
+        List<SysMenuEntity> filteredMenus = allMenus.stream()
+                .filter(menu -> allowedMenuIds.contains(menu.getId()))
+                .toList();
+        Set<Long> reachableIds = collectReachableParentIds(filteredMenus, allMenus);
+        List<SysMenuEntity> resultMenus = allMenus.stream()
+                .filter(menu -> allowedMenuIds.contains(menu.getId()) || reachableIds.contains(menu.getId()))
+                .toList();
+        return menuTreeHelper.buildRouteTree(resultMenus);
+    }
+
+    private Set<Long> collectReachableParentIds(List<SysMenuEntity> filteredMenus, List<SysMenuEntity> allMenus) {
+        Map<Long, SysMenuEntity> menuMap = allMenus.stream()
+                .collect(Collectors.toMap(SysMenuEntity::getId, m -> m));
+        Set<Long> reachable = new HashSet<>();
+        for (SysMenuEntity menu : filteredMenus) {
+            Long parentId = menu.getParentId();
+            while (parentId != null && parentId != 0L) {
+                if (reachable.contains(parentId)) {
+                    break;
+                }
+                reachable.add(parentId);
+                SysMenuEntity parent = menuMap.get(parentId);
+                if (parent == null) {
+                    break;
+                }
+                parentId = parent.getParentId();
+            }
+        }
+        return reachable;
     }
 
     /**
@@ -268,6 +332,16 @@ public class MenuApplicationService {
         if ("MENU".equals(menuType)
                 && (component == null || component.isBlank())) {
             throw new BusinessException(ErrorCode.MENU_COMPONENT_REQUIRED);
+        }
+    }
+
+    /**
+     * 校验路由路径。MENU、DIRECTORY 必须提供非空路径，BUTTON 可为空（后端会补空字符串）。
+     */
+    private void validatePath(String menuType, String path) {
+        if (!"BUTTON".equals(menuType) && !StringUtils.hasText(path)) {
+            // 使用缺少必填参数错误码
+            throw new BusinessException(ErrorCode.MISSING_PARAMETER);
         }
     }
 
