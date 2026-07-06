@@ -51,10 +51,11 @@ public class SecurityConfig {
                                 "/api/auth/captcha",
                                 "/api/auth/login",
                                 "/api/auth/register",
-                                "/api/department/**",  // ��ʱ���ţ����ڵ���ɾ������
+                                "/api/department/**",
                                 "/actuator/health",
                                 "/v3/api-docs/**",
-                                "/swagger-ui/**"
+                                "/swagger-ui/**",
+                                "/ws/**"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(AbstractHttpConfigurer::disable)

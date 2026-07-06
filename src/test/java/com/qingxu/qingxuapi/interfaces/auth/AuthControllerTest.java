@@ -3,6 +3,7 @@ package com.qingxu.qingxuapi.interfaces.auth;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qingxu.qingxuapi.application.auth.AuthApplicationService;
 import com.qingxu.qingxuapi.infrastructure.captcha.CaptchaChallenge;
 import com.qingxu.qingxuapi.infrastructure.captcha.CaptchaService;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysUserEntity;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -239,6 +241,9 @@ class AuthControllerTest {
         assertThat(loginRoot.at("/data/status").asText()).isEqualTo("ACTIVE");
 
         MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
+        assertThat(session).isNotNull();
+        assertThat(session.getAttribute(AuthApplicationService.SESSION_CURRENT_USER)).isNotNull();
+        assertThat(session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY)).isNotNull();
 
         String currentUserResponse = mockMvc.perform(get("/api/auth/current-user").session(session))
                 .andExpect(status().isOk())
@@ -251,6 +256,15 @@ class AuthControllerTest {
         assertThat(currentUserRoot.at("/data/tenantId").asText()).isEqualTo("default");
         assertThat(currentUserRoot.at("/data/roles").isArray()).isTrue();
         assertThat(currentUserRoot.at("/data/permissions").isArray()).isTrue();
+
+        String protectedResponse = mockMvc.perform(get("/api/protected/ping").session(session))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        JsonNode protectedRoot = objectMapper.readTree(protectedResponse);
+        assertThat(protectedRoot.at("/data").asText()).isEqualTo("pong");
     }
 
     @Test

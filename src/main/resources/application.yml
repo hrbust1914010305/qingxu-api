@@ -14,6 +14,9 @@ spring:
       max-request-size: 20MB
   session:
     timeout: 2h
+    store-type: redis
+    redis:
+      namespace: spring:session:qingxu
 
 server:
   port: 8081
@@ -22,7 +25,8 @@ server:
       cookie:
         name: QINGXU_SESSION
         http-only: true
-        same-site: lax
+        same-site: none
+        secure: false
 
 qingxu:
   security:

@@ -48,7 +48,27 @@ public class AuthController {
 
     @PostMapping("/login")
     public ApiResponse<CurrentUserResponse> login(@Valid @RequestBody LoginRequest request, HttpServletRequest servletRequest) {
-        return responseFactory.success(authApplicationService.login(request, servletRequest));
+        System.out.println("========================================");
+        System.out.println("[AuthController] 收到登录请求");
+        System.out.println("  - Username: " + request.username());
+        System.out.println("  - Request URI: " + servletRequest.getRequestURI());
+        System.out.println("  - Cookies: ");
+        if (servletRequest.getCookies() != null) {
+            for (jakarta.servlet.http.Cookie cookie : servletRequest.getCookies()) {
+                System.out.println("    * " + cookie.getName() + " = " + (cookie.getName().contains("SESSION") ? "[HIDDEN]" : cookie.getValue()));
+            }
+        } else {
+            System.out.println("    (无 Cookie)");
+        }
+        System.out.println("========================================");
+
+        ApiResponse<CurrentUserResponse> response = responseFactory.success(authApplicationService.login(request, servletRequest));
+
+        System.out.println("========================================");
+        System.out.println("[AuthController] 登录成功，返回响应");
+        System.out.println("========================================");
+
+        return response;
     }
 
     @PostMapping("/register")
@@ -76,7 +96,38 @@ public class AuthController {
 
     @GetMapping("/current-user")
     public ApiResponse<CurrentUserResponse> currentUser(HttpServletRequest servletRequest) {
-        return responseFactory.success(authApplicationService.currentUser(servletRequest));
+        System.out.println("========================================");
+        System.out.println("[AuthController] 收到 /current-user 请求");
+        System.out.println("  - Request URI: " + servletRequest.getRequestURI());
+        System.out.println("  - Request Method: " + servletRequest.getMethod());
+        System.out.println("  - Session ID (from cookie): " + servletRequest.getRequestedSessionId());
+        System.out.println("  - Is Session Valid: " + servletRequest.isRequestedSessionIdValid());
+        System.out.println("  - Cookies: ");
+        if (servletRequest.getCookies() != null) {
+            for (jakarta.servlet.http.Cookie cookie : servletRequest.getCookies()) {
+                System.out.println("    * " + cookie.getName() +
+                        " = " + (cookie.getName().contains("SESSION") ? "[VALUE_LENGTH=" + cookie.getValue().length() + "]" : cookie.getValue()) +
+                        " [Domain=" + cookie.getDomain() +
+                        ", Path=" + cookie.getPath() +
+                        ", MaxAge=" + cookie.getMaxAge() +
+                        ", HttpOnly=" + cookie.isHttpOnly() +
+                        ", Secure=" + cookie.getSecure() +
+                        "]");
+            }
+        } else {
+            System.out.println("    ⚠️  (无 Cookie - 这就是401的原因!)");
+        }
+        System.out.println("  - Authorization Header: " + servletRequest.getHeader("Authorization"));
+        System.out.println("========================================");
+
+        try {
+            CurrentUserResponse user = authApplicationService.currentUser(servletRequest);
+            System.out.println("✅ [AuthController] /current-user 成功: username=" + user.username());
+            return responseFactory.success(user);
+        } catch (Exception e) {
+            System.err.println("❌ [AuthController] /current-user 失败: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+            throw e;
+        }
     }
 
     @GetMapping("/routes")

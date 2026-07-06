@@ -3,6 +3,7 @@ package com.qingxu.qingxuapi.application.menu;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qingxu.qingxuapi.common.exception.BusinessException;
+import com.qingxu.qingxuapi.common.permissionchange.PermissionChangeDispatcher;
 import com.qingxu.qingxuapi.common.response.ErrorCode;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysMenuEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysRoleEntity;
@@ -32,6 +33,7 @@ public class MenuApplicationService {
     private final SysRoleMapper roleMapper;
     private final SysRoleMenuMapper roleMenuMapper;
     private final MenuTreeHelper menuTreeHelper;
+    private final PermissionChangeDispatcher permissionChangeDispatcher;
 
     public List<MenuTreeNode> getMenuTree(MenuTreeQueryRequest request) {
         if (request != null && hasFilter(request)) {
@@ -168,6 +170,8 @@ public class MenuApplicationService {
             throw new BusinessException(ErrorCode.MENU_NOT_FOUND);
         }
 
+        String oldStatus = existing.getStatus();
+
         // Home 鑿滃崟淇濇姢
         if ("Home".equals(existing.getName()) && existing.getParentId() == 0L) {
             if (request.getStatus() != null && !request.getStatus().equals(existing.getStatus())) {
@@ -186,6 +190,11 @@ public class MenuApplicationService {
         }
         existing.setUpdatedAt(LocalDateTime.now());
         menuMapper.updateById(existing);
+
+        String reason = (request.getStatus() != null && !request.getStatus().equals(oldStatus))
+                ? "菜单状态变更: " + oldStatus + " -> " + request.getStatus()
+                : "菜单内容变更";
+        permissionChangeDispatcher.fireMenuChange(id, null, null, reason);
     }
 
     /**
@@ -209,6 +218,7 @@ public class MenuApplicationService {
             throw new BusinessException(ErrorCode.MENU_HAS_CHILDREN);
         }
 
+        permissionChangeDispatcher.fireMenuChange(id, null, null, "菜单被删除");
         menuMapper.deleteById(id);
     }
 

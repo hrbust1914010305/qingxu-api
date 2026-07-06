@@ -13,7 +13,12 @@ import java.util.List;
 @Mapper
 public interface SysRoleMenuMapper extends BaseMapper<SysRoleMenuEntity> {
 
-    @Select("SELECT menu_id FROM sys_role_menu WHERE role_id = #{roleId}")
+    @Select("""
+            SELECT rm.menu_id
+            FROM sys_role_menu rm
+            INNER JOIN sys_menu m ON m.id = rm.menu_id
+            WHERE rm.role_id = #{roleId}
+            """)
     List<Long> selectMenuIdsByRoleId(@Param("roleId") Long roleId);
 
     @Delete("DELETE FROM sys_role_menu WHERE role_id = #{roleId}")

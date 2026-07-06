@@ -20,8 +20,8 @@ import jakarta.servlet.http.HttpSession;
 import com.qingxu.qingxuapi.interfaces.auth.dto.PermissionResponse;
 import com.qingxu.qingxuapi.interfaces.auth.dto.RegisterRequest;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.session.FindByIndexNameSessionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,8 +30,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -150,12 +150,36 @@ public class AuthApplicationService {
                 principal, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        log.debug("=== [login] 开始创建 Session ===");
+        log.debug("SecurityContext 已设置: {}", SecurityContextHolder.getContext().getAuthentication());
+
         HttpSession session = servletRequest.getSession(true);
+        log.debug("✅ [login] Session 创建成功: ID={}", session.getId());
+        log.debug("[login] Session isNew: {}", session.isNew());
+
         session.setAttribute(SESSION_CURRENT_USER, currentUserResponse);
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                SecurityContextHolder.getContext());
+        log.debug("✅ [login] SESSION_CURRENT_USER 已存入 Session");
+        session.setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                SecurityContextHolder.getContext()
+        );
+        log.debug("✅ [login] SPRING_SECURITY_CONTEXT 已存入 Session");
+
+        log.debug("[login] 存入的用户信息: id={}, username={}, roles={}",
+                currentUserResponse.id(),
+                currentUserResponse.username(),
+                currentUserResponse.roles());
+
+        session.setAttribute(
+                FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME,
+                String.valueOf(user.getId())
+        );
+        log.debug("✅ [login] PRINCIPAL_NAME_INDEX_NAME 已设置: userId={}", user.getId());
 
         sessionRegistry.registerNewSession(session.getId(), principal);
+        log.debug("✅ [login] Session 已注册到 SessionRegistry");
+
+        log.debug("=== [login] 登录完成，准备返回用户信息 ===");
 
         auditService.record(AuditEventType.LOGIN_SUCCESS, true, request.username(), user.getId(), servletRequest);
         return currentUserResponse;
@@ -220,14 +244,48 @@ public class AuthApplicationService {
     }
 
     public CurrentUserResponse currentUser(HttpServletRequest servletRequest) {
+        log.debug("=== [currentUser] 开始获取当前用户 ===");
+        log.debug("Request URI: {}", servletRequest.getRequestURI());
+        log.debug("Session ID from Cookie: {}", servletRequest.getRequestedSessionId());
+        log.debug("Is Requested Session Valid: {}", servletRequest.isRequestedSessionIdValid());
+
         HttpSession session = servletRequest.getSession(false);
+        log.debug("HttpSession object: {}", session);
+
         if (session == null) {
+            log.error("❌ [currentUser] Session 为 null！可能原因：");
+            log.error("   1. 未登录");
+            log.error("   2. Session 已过期");
+            log.error("   3. Cookie 未正确传递（检查 withCredentials 配置）");
+            log.error("   4. SameSite 策略阻止了 Cookie 发送");
             throw new UnauthorizedException();
         }
+
+        log.debug("✅ Session ID: {}", session.getId());
+        log.debug("Session Creation Time: {}", session.getCreationTime());
+        log.debug("Session Last Accessed: {}", session.getLastAccessedTime());
+        log.debug("Session Max Inactive Interval: {} seconds", session.getMaxInactiveInterval());
+
+        log.debug("Session Attributes:");
+        java.util.Enumeration<String> attrNames = session.getAttributeNames();
+        while (attrNames.hasMoreElements()) {
+            String attrName = attrNames.nextElement();
+            Object attrValue = session.getAttribute(attrName);
+            log.debug("  - {}: {}", attrName, attrValue != null ? attrValue.getClass().getSimpleName() : "null");
+        }
+
         Object value = session.getAttribute(SESSION_CURRENT_USER);
+        log.debug("SESSION_CURRENT_USER value: {}", value);
+        log.debug("SESSION_CURRENT_USER type: {}", value != null ? value.getClass().getName() : "null");
+
         if (!(value instanceof CurrentUserResponse currentUserResponse)) {
+            log.error("❌ [currentUser] SESSION_CURRENT_USER 类型不匹配或为空！");
+            log.error("   实际类型: {}", value != null ? value.getClass().getName() : "null");
+            log.error("   期望类型: CurrentUserResponse");
             throw new UnauthorizedException();
         }
+
+        log.debug("✅ [currentUser] 成功获取用户信息: id={}, username={}", currentUserResponse.id(), currentUserResponse.username());
         return currentUserResponse;
     }
 

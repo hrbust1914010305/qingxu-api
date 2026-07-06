@@ -3,6 +3,7 @@ package com.qingxu.qingxuapi.application.role;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qingxu.qingxuapi.common.exception.BusinessException;
+import com.qingxu.qingxuapi.common.permissionchange.PermissionChangeDispatcher;
 import com.qingxu.qingxuapi.common.response.ErrorCode;
 import com.qingxu.qingxuapi.common.response.PageResponse;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysMenuEntity;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,6 +44,7 @@ public class RoleApplicationService {
     private final SysRolePermissionMapper rolePermissionMapper;
     private final SysPermissionMapper permissionMapper;
     private final SysUserRoleMapper userRoleMapper;
+    private final PermissionChangeDispatcher permissionChangeDispatcher;
 
     public PageResponse<RoleResponse> getRolePage(String code, String name, String status,
                                                    int current, int pageSize) {
@@ -124,6 +127,8 @@ public class RoleApplicationService {
                 .eq(SysUserRoleEntity::getRoleId, id));
         roleMenuMapper.deleteByRoleId(id);
         rolePermissionMapper.deleteByRoleId(id);
+
+        permissionChangeDispatcher.fireRoleChange(id, null, null, "角色被删除");
         roleMapper.deleteById(id);
     }
 
@@ -139,6 +144,8 @@ public class RoleApplicationService {
         role.setStatus(status);
         role.setUpdatedAt(LocalDateTime.now());
         roleMapper.updateById(role);
+
+        permissionChangeDispatcher.fireRoleChange(id, null, null, "角色状态变更: " + status);
     }
 
     public List<Long> getRoleMenuIds(Long id) {
@@ -158,15 +165,26 @@ public class RoleApplicationService {
         if (menuIds == null || menuIds.isEmpty()) {
             roleMenuMapper.deleteByRoleId(roleId);
             rolePermissionMapper.deleteByRoleId(roleId);
+            permissionChangeDispatcher.fireRoleChange(roleId, null, null, "清空角色菜单");
             return;
         }
+        List<Long> distinctMenuIds = new LinkedHashSet<>(menuIds).stream().toList();
         List<SysMenuEntity> menus = menuMapper.selectList(
-                new LambdaQueryWrapper<SysMenuEntity>().in(SysMenuEntity::getId, menuIds));
-        if (menus.size() != menuIds.size()) {
-            throw new BusinessException(ErrorCode.ROLE_MENU_NOT_FOUND);
+                new LambdaQueryWrapper<SysMenuEntity>().in(SysMenuEntity::getId, distinctMenuIds));
+        Set<Long> existingMenuIds = menus.stream()
+                .map(SysMenuEntity::getId)
+                .collect(Collectors.toSet());
+        List<Long> missingMenuIds = distinctMenuIds.stream()
+                .filter(menuId -> !existingMenuIds.contains(menuId))
+                .toList();
+        if (!missingMenuIds.isEmpty()) {
+            throw new BusinessException(
+                    ErrorCode.ROLE_MENU_NOT_FOUND,
+                    ErrorCode.ROLE_MENU_NOT_FOUND.getMessage() + ": " + missingMenuIds
+            );
         }
         roleMenuMapper.deleteByRoleId(roleId);
-        List<SysRoleMenuEntity> roleMenuList = menuIds.stream().map(menuId -> {
+        List<SysRoleMenuEntity> roleMenuList = distinctMenuIds.stream().map(menuId -> {
             SysRoleMenuEntity rm = new SysRoleMenuEntity();
             rm.setRoleId(roleId);
             rm.setMenuId(menuId);
@@ -193,6 +211,8 @@ public class RoleApplicationService {
                 rolePermissionMapper.batchInsert(rolePermList);
             }
         }
+
+        permissionChangeDispatcher.fireRoleChange(roleId, null, null, "重新分配角色菜单");
     }
 
     public List<Long> getMenuIdsByRoleIds(List<Long> roleIds) {

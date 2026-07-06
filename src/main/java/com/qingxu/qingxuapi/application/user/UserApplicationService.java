@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qingxu.qingxuapi.common.audit.AuditEventType;
 import com.qingxu.qingxuapi.common.audit.AuditService;
 import com.qingxu.qingxuapi.common.exception.BusinessException;
+import com.qingxu.qingxuapi.common.permissionchange.PermissionChangeDispatcher;
 import com.qingxu.qingxuapi.common.response.ErrorCode;
 import com.qingxu.qingxuapi.common.response.PageResponse;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysDepartmentEntity;
@@ -62,6 +63,7 @@ public class UserApplicationService {
     private final SysRoleMapper roleMapper;
     private final AuditService auditService;
     private final SessionRegistry sessionRegistry;
+    private final PermissionChangeDispatcher permissionChangeDispatcher;
 
     // ========== 用户偏好 & 个人设置 ==========
 
@@ -311,6 +313,7 @@ public class UserApplicationService {
             deleteDeptWrapper.eq(SysUserDepartmentEntity::getUserId, id);
             userDeptMapper.delete(deleteDeptWrapper);
 
+            permissionChangeDispatcher.fireUserDeleteChange(id, currentUserId, currentUsername, "用户被删除");
             userMapper.deleteById(id);
         }
         auditService.record(AuditEventType.USER_DELETE, true, currentUsername, currentUserId, servletRequest);
@@ -333,6 +336,7 @@ public class UserApplicationService {
 
         if ("DISABLED".equals(request.status())) {
             expireUserSessions(id);
+            permissionChangeDispatcher.fireUserStatusChange(id, currentUserId, currentUsername, "用户被禁用");
         }
 
         auditService.record(AuditEventType.USER_STATUS_CHANGE, true, currentUsername, currentUserId, servletRequest);
@@ -390,6 +394,9 @@ public class UserApplicationService {
                     userRoleMapper.insert(userRole);
                 }
             }
+        }
+        for (Long uid : userIds) {
+            permissionChangeDispatcher.fireUserRoleChange(uid, currentUserId, currentUsername, "用户角色分配变更");
         }
         // 6. 记录审计日志（使用 USER_UPDATE 统一审计）
         auditService.record(AuditEventType.USER_UPDATE, true, currentUsername, currentUserId, servletRequest);

@@ -4,6 +4,18 @@ spring:
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: ${QINGXU_REDIS_HOST:localhost}
+      port: ${QINGXU_REDIS_PORT:6379}
+      password: ${QINGXU_REDIS_PASSWORD:}
+      database: 0
+      timeout: 3s
+      lettuce:
+        pool:
+          max-active: 32
+          max-idle: 8
+          min-idle: 4
   flyway:
     enabled: true
     locations: classpath:db/migration
