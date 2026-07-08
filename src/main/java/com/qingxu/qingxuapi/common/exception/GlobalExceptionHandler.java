@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -83,6 +84,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .badRequest()
                 .body(responseFactory.failure(ErrorCode.MISSING_PARAMETER, message));
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException exception) {
+        log.warn("文件上传超过大小限制: {}", exception.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.FILE_TOO_LARGE.getHttpStatus())
+                .body(responseFactory.failure(ErrorCode.FILE_TOO_LARGE));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

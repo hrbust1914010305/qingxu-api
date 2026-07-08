@@ -15,3 +15,22 @@ qingxu:
         - http://localhost:5173
     csrf:
       enabled: false
+  file:
+    storage-type: local
+    local-root: F:/LocalFiles/test-files
+    chunk-root: F:/LocalFiles/test-file-chunks
+    normal-upload-threshold: 20MB
+    chunk-size: 5MB
+    max-size: 2GB
+    upload-session-ttl: 24h
+    cleanup-cron: "0 0 * * * ?"
+    allowed-extensions:
+      - txt
+      - pdf
+      - png
+    allowed-biz-types:
+      - default
+      - knowledge
+    download-disposition: attachment
+    checksum:
+      enabled: true

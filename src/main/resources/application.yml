@@ -11,7 +11,7 @@ spring:
   servlet:
     multipart:
       max-file-size: 20MB
-      max-request-size: 20MB
+      max-request-size: 25MB
   session:
     timeout: 2h
     store-type: redis
@@ -72,6 +72,39 @@ qingxu:
     code-count: 4
     interfere-count: 15
     expires-in-seconds: 120
+  file:
+    storage-type: local
+    local-root: F:/LocalFiles/files
+    chunk-root: F:/LocalFiles/file-chunks
+    normal-upload-threshold: 20MB
+    chunk-size: 5MB
+    max-size: 2GB
+    upload-session-ttl: 24h
+    cleanup-cron: "0 0 * * * ?"
+    allowed-extensions:
+      - pdf
+      - doc
+      - docx
+      - xls
+      - xlsx
+      - ppt
+      - pptx
+      - png
+      - jpg
+      - jpeg
+      - gif
+      - zip
+      - rar
+      - 7z
+      - txt
+      - mp3
+      - mp4
+    allowed-biz-types:
+      - default
+      - knowledge
+    download-disposition: attachment
+    checksum:
+      enabled: true
   session:
     timeout: 2h
     redis-namespace: spring:session:qingxu
