@@ -22,6 +22,9 @@ spring:
 
 qingxu:
   security:
+    cors:
+      allowed-origins:
+        - ${QINGXU_WEB_ORIGIN:http://localhost:5173}
     csrf:
       enabled: true
 

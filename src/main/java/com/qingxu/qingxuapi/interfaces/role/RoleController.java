@@ -56,7 +56,7 @@ public class RoleController {
     @PreAuthorize("hasAuthority('system:role:create')")
     public ApiResponse<Map<String, Long>> create(@RequestBody @Valid CreateRoleRequest request) {
         Long id = roleApplicationService.createRole(request);
-        return responseFactory.success(Map.of("id", id));
+        return responseFactory.id(id);
     }
 
     @PutMapping("/{id}")
@@ -64,14 +64,14 @@ public class RoleController {
     public ApiResponse<Void> update(@PathVariable Long id,
                                     @RequestBody @Valid UpdateRoleRequest request) {
         roleApplicationService.updateRole(id, request);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('system:role:delete')")
     public ApiResponse<Void> delete(@PathVariable Long id) {
         roleApplicationService.deleteRole(id);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     @PutMapping("/{id}/status")
@@ -79,7 +79,7 @@ public class RoleController {
     public ApiResponse<Void> updateStatus(@PathVariable Long id,
                                           @RequestBody @Valid UpdateRoleStatusRequest request) {
         roleApplicationService.updateRoleStatus(id, request.status());
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     @GetMapping("/{id}/menus")
@@ -94,6 +94,6 @@ public class RoleController {
     public ApiResponse<Void> assignMenus(@PathVariable Long id,
                                          @RequestBody @Valid AssignMenusRequest request) {
         roleApplicationService.assignMenus(id, request.menuIds());
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 }

@@ -1,6 +1,7 @@
 package com.qingxu.qingxuapi.infrastructure.session;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qingxu.qingxuapi.common.config.QingxuSessionProperties;
 import com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal;
 import com.qingxu.qingxuapi.interfaces.auth.dto.CurrentUserResponse;
 import org.junit.jupiter.api.Test;
@@ -10,15 +11,33 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 
+import java.time.Duration;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 class RedisSessionConfigTest {
 
     private final RedisSerializer<Object> serializer =
-            new RedisSessionConfig().springSessionDefaultRedisSerializer(new ObjectMapper().findAndRegisterModules());
+            new RedisSessionConfig(new QingxuSessionProperties()).springSessionDefaultRedisSerializer(new ObjectMapper().findAndRegisterModules());
+
+    @Test
+    void sessionRepositoryCustomizerAppliesConfiguredTimeoutAndNamespace() {
+        QingxuSessionProperties properties = new QingxuSessionProperties();
+        properties.setTimeout(Duration.ofMinutes(45));
+        properties.setRedisNamespace("spring:session:test");
+        RedisSessionConfig config = new RedisSessionConfig(properties);
+        RedisIndexedSessionRepository repository = mock(RedisIndexedSessionRepository.class);
+
+        config.redisSessionRepositoryCustomizer().customize(repository);
+
+        verify(repository).setDefaultMaxInactiveInterval(Duration.ofMinutes(45));
+        verify(repository).setRedisKeyNamespace("spring:session:test");
+    }
 
     @Test
     void sessionSerializerRestoresCurrentUserResponseType() {

@@ -2,14 +2,12 @@ package com.qingxu.qingxuapi.common.permissionchange;
 
 import com.qingxu.qingxuapi.common.config.TraceIdFilter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PermissionChangeDispatcher {
@@ -50,7 +48,5 @@ public class PermissionChangeDispatcher {
                 LocalDateTime.now(), TraceIdFilter.currentTraceId(), adminInvolved
         );
         eventPublisher.publishEvent(event);
-        log.debug("Permission change event published type={} entityId={} affectedUsers={}",
-                type, entityId, userIds.size());
     }
 }

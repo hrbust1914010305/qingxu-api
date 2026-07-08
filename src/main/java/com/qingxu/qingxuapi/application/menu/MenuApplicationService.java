@@ -98,7 +98,7 @@ public class MenuApplicationService {
     }
 
     /**
-     * 鑾峰彇鑿滃崟鍒楄〃锛堝钩閾猴級
+     * 获取菜单列表（平铺）
      */
     public Page<SysMenuEntity> getMenuPage(MenuQueryRequest request) {
         LambdaQueryWrapper<SysMenuEntity> wrapper = new LambdaQueryWrapper<>();
@@ -128,7 +128,7 @@ public class MenuApplicationService {
     }
 
     /**
-     * 鑾峰彇鑿滃崟璇︽儏
+     * 获取菜单详情
      */
     public SysMenuEntity getMenuDetail(Long id) {
         SysMenuEntity menu = menuMapper.selectById(id);
@@ -139,7 +139,7 @@ public class MenuApplicationService {
     }
 
     /**
-     * 鍒涘缓鑿滃崟
+     * 创建菜单
      */
     @Transactional
     public MenuCreateResponse createMenu(MenuCreateRequest request) {
@@ -161,7 +161,7 @@ public class MenuApplicationService {
     }
 
     /**
-     * 鏇存柊鑿滃崟
+     * 更新菜单
      */
     @Transactional
     public void updateMenu(Long id, MenuUpdateRequest request) {
@@ -172,7 +172,7 @@ public class MenuApplicationService {
 
         String oldStatus = existing.getStatus();
 
-        // Home 鑿滃崟淇濇姢
+        // Home 菜单保护
         if ("Home".equals(existing.getName()) && existing.getParentId() == 0L) {
             if (request.getStatus() != null && !request.getStatus().equals(existing.getStatus())) {
                 throw new BusinessException(ErrorCode.MENU_HOME_CANNOT_MODIFY_STATUS);
@@ -198,7 +198,7 @@ public class MenuApplicationService {
     }
 
     /**
-     * 鍒犻櫎鑿滃崟
+     * 删除菜单
      */
     @Transactional
     public void deleteMenu(Long id) {
@@ -207,7 +207,7 @@ public class MenuApplicationService {
             throw new BusinessException(ErrorCode.MENU_NOT_FOUND);
         }
 
-        // Home 鑿滃崟淇濇姢
+        // Home 菜单保护
         if ("Home".equals(existing.getName()) && existing.getParentId() == 0L) {
             throw new BusinessException(ErrorCode.MENU_HOME_CANNOT_DELETE);
         }
@@ -310,7 +310,7 @@ public class MenuApplicationService {
         return menuTreeHelper.buildRouteTree(allMenus);
     }
 
-    // ========== 绉佹湁鏂规硶锛氭牎楠?==========
+    // ========== 私有方法：校验 ==========
 
     private void validateParentMenu(Long parentId, String childMenuType) {
         if (parentId == null || parentId == 0L) return;

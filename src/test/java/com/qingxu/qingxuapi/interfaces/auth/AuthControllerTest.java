@@ -237,8 +237,12 @@ class AuthControllerTest {
 
         String loginResponse = loginResult.getResponse().getContentAsString();
         JsonNode loginRoot = objectMapper.readTree(loginResponse);
+        assertThat(loginRoot.at("/data/id").asLong()).isEqualTo(user.getId());
         assertThat(loginRoot.at("/data/username").asText()).isEqualTo("active-user");
+        assertThat(loginRoot.at("/data/tenantId").asText()).isEqualTo("default");
         assertThat(loginRoot.at("/data/status").asText()).isEqualTo("ACTIVE");
+        assertThat(loginRoot.at("/data/roles").isMissingNode()).isTrue();
+        assertThat(loginRoot.at("/data/permissions").isMissingNode()).isTrue();
 
         MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
         assertThat(session).isNotNull();

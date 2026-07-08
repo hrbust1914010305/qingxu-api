@@ -19,4 +19,14 @@ public interface SysRoleMapper extends BaseMapper<SysRoleEntity> {
             order by r.id
             """)
     List<SysRoleEntity> selectByUserId(Long userId);
+
+    @Select("""
+            select r.id, r.code, r.name, r.status
+            from sys_role r
+            inner join sys_user_role ur on ur.role_id = r.id
+            where ur.user_id = #{userId}
+              and r.status = 'ACTIVE'
+            order by r.id
+            """)
+    List<SysRoleEntity> selectActiveByUserId(Long userId);
 }

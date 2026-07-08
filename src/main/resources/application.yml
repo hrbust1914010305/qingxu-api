@@ -30,12 +30,62 @@ server:
 
 qingxu:
   security:
+    public-paths:
+      - /api/auth/captcha
+      - /api/auth/login
+      - /api/auth/register
+      - /actuator/health
+      - /v3/api-docs/**
+      - /swagger-ui/**
+      - /ws/**
     cors:
       allowed-origins:
         - http://localhost:5173
+      allowed-methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - OPTIONS
+      allowed-headers:
+        - "*"
+      allow-credentials: true
     csrf:
       # Development only. Do not use this value in production.
       enabled: false
+  websocket:
+    endpoint: /ws
+    broker-prefixes:
+      - /queue
+      - /topic
+    application-destination-prefix: /app
+    user-destination-prefix: /user
+    heartbeat:
+      - 10000
+      - 10000
+    heartbeat-pool-size: 2
+    notification-queue: /queue/notifications
+    permission-reload-queue: /queue/permission-reload
+  captcha:
+    width: 120
+    height: 40
+    code-count: 4
+    interfere-count: 15
+    expires-in-seconds: 120
+  session:
+    timeout: 2h
+    redis-namespace: spring:session:qingxu
+    cookie:
+      name: QINGXU_SESSION
+      path: /
+      max-age: -1
+      http-only: true
+      same-site:
+        dev: Lax
+        prod: None
+      secure:
+        dev: false
+        prod: true
 
 mybatis-plus:
   configuration:

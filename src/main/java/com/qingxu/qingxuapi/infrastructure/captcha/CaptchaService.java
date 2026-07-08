@@ -1,9 +1,11 @@
 package com.qingxu.qingxuapi.infrastructure.captcha;
 
 import com.qingxu.qingxuapi.common.exception.BusinessException;
+import com.qingxu.qingxuapi.common.config.QingxuCaptchaProperties;
 import com.qingxu.qingxuapi.common.response.ErrorCode;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -12,17 +14,24 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@RequiredArgsConstructor
 public class CaptchaService {
 
-    private static final int EXPIRES_IN_SECONDS = 120;
+    private final QingxuCaptchaProperties properties;
     private final Map<String, CaptchaValue> captchaStore = new ConcurrentHashMap<>();
 
     public CaptchaChallenge createCaptcha() {
-        LineCaptcha captcha = CaptchaUtil.createLineCaptcha(120, 40, 4, 15);
+        LineCaptcha captcha = CaptchaUtil.createLineCaptcha(
+                properties.getWidth(),
+                properties.getHeight(),
+                properties.getCodeCount(),
+                properties.getInterfereCount()
+        );
         String captchaKey = UUID.randomUUID().toString();
         String answer = captcha.getCode();
-        captchaStore.put(captchaKey, new CaptchaValue(answer, System.currentTimeMillis() + Duration.ofSeconds(EXPIRES_IN_SECONDS).toMillis()));
-        return new CaptchaChallenge(captchaKey, captcha.getImageBase64Data(), EXPIRES_IN_SECONDS, answer);
+        int expiresInSeconds = properties.getExpiresInSeconds();
+        captchaStore.put(captchaKey, new CaptchaValue(answer, System.currentTimeMillis() + Duration.ofSeconds(expiresInSeconds).toMillis()));
+        return new CaptchaChallenge(captchaKey, captcha.getImageBase64Data(), expiresInSeconds, answer);
     }
 
     public boolean validateAndConsume(String captchaKey, String captcha) {

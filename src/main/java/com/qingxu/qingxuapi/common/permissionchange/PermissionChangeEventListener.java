@@ -3,6 +3,7 @@ package com.qingxu.qingxuapi.common.permissionchange;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qingxu.qingxuapi.application.notification.NotificationApplicationService;
 import com.qingxu.qingxuapi.application.notification.NotificationCreateCommand;
+import com.qingxu.qingxuapi.common.config.QingxuWebSocketProperties;
 import com.qingxu.qingxuapi.domain.notification.NotificationLevel;
 import com.qingxu.qingxuapi.domain.notification.NotificationType;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysPermissionChangeLogEntity;
@@ -23,18 +24,14 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 权限变更事件监听：事务提交后执行。
- * <p>
- * - 普通分支：失效该用户的所有 RedisIndexedSession + 推送 STOMP
- * - admin 分支：不失效 Session + 推送 STOMP（requireReLogin=false）
- * - 审计幂等由 Dispatcher 通过 Redis key 控制（同一 (changeType, entityId) 24h 内只发布一次事件）
+ * 权限变更事件监听器，在事务提交后执行。
+ * 普通分支会失效用户会话并推送 STOMP 消息；admin 分支只推送提醒，不失效会话。
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class PermissionChangeEventListener {
 
-    private static final String QUEUE_DESTINATION = "/queue/permission-reload";
     private static final String IDEMPOTENT_KEY_PREFIX = "perm-change:";
 
     private final FindByIndexNameSessionRepository<? extends Session> sessionRepository;
@@ -44,6 +41,7 @@ public class PermissionChangeEventListener {
     private final StringRedisTemplate redisTemplate;
     private final PermissionChangeProperties properties;
     private final NotificationApplicationService notificationApplicationService;
+    private final QingxuWebSocketProperties webSocketProperties;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handle(PermissionChangeEvent event) {
@@ -83,7 +81,7 @@ public class PermissionChangeEventListener {
                     event.traceId()
             ));
         } catch (Exception ex) {
-            log.warn("权限变更通知中心写入失败: type={} entityId={} reason={}",
+            log.warn("权限变更通知写入失败: type={} entityId={} reason={}",
                     event.changeType(),
                     event.entityId(),
                     ex.getMessage()
@@ -109,7 +107,7 @@ public class PermissionChangeEventListener {
     private void pushStompMessage(String userKey, PermissionChangeEvent event, boolean adminBranch) {
         SimpMessagingTemplate template = messagingTemplateProvider.getIfAvailable();
         if (template == null) {
-            log.debug("SimpMessagingTemplate 尚未就绪，跳过 STOMP 推送 user={}", userKey);
+            log.warn("SimpMessagingTemplate 未就绪，跳过 STOMP 推送 user={}", userKey);
             return;
         }
         PermissionReloadPayload payload = PermissionReloadPayload.of(
@@ -119,8 +117,7 @@ public class PermissionChangeEventListener {
                 !adminBranch,
                 event.traceId()
         );
-        template.convertAndSendToUser(userKey, QUEUE_DESTINATION, payload);
-        log.debug("STOMP 推送成功 user={} requireReLogin={}", userKey, !adminBranch);
+        template.convertAndSendToUser(userKey, webSocketProperties.getPermissionReloadQueue(), payload);
     }
 
     private void recordAudit(PermissionChangeEvent event, boolean adminBranch) {
@@ -131,8 +128,6 @@ public class PermissionChangeEventListener {
                     properties.getIdempotentWindow()
             );
             if (Boolean.FALSE.equals(acquired)) {
-                log.debug("Permission change audit skipped by idempotency type={} entityId={}",
-                        event.changeType(), event.entityId());
                 return;
             }
             SysPermissionChangeLogEntity entity = new SysPermissionChangeLogEntity();
@@ -147,7 +142,7 @@ public class PermissionChangeEventListener {
             entity.setOccurredAt(event.occurredAt());
             auditMapper.insert(entity);
         } catch (Exception e) {
-            log.warn("审计落库失败: {}", e.getMessage());
+            log.warn("权限变更审计落库失败: {}", e.getMessage());
         }
     }
 }

@@ -5,12 +5,21 @@ import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Map;
 
 @Component
 public class ResponseFactory {
 
     public <T> ApiResponse<T> success(T data) {
         return build(ErrorCode.SUCCESS, ErrorCode.SUCCESS.getMessage(), data);
+    }
+
+    public ApiResponse<Void> success() {
+        return success(null);
+    }
+
+    public ApiResponse<Map<String, Long>> id(Long id) {
+        return success(Map.of("id", id));
     }
 
     public ApiResponse<Void> failure(ErrorCode errorCode) {

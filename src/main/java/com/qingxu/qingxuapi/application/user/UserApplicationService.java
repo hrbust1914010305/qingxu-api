@@ -511,8 +511,6 @@ public class UserApplicationService {
                     vo.status(),
                     vo.createdAt() != null ? vo.createdAt().toString() : ""
             );
-            log.debug("转换用户导出数据: id={}, username={}, nickname={}",
-                    user.getId(), data.getUsername(), data.getNickname());
             return data;
         }).collect(Collectors.toList());
 

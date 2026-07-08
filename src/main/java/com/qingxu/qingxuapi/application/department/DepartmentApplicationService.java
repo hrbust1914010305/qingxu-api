@@ -430,7 +430,6 @@ public class DepartmentApplicationService {
             newUserDept.setCreatedAt(LocalDateTime.now());
             userDeptMapper.insert(newUserDept);
 
-            log.debug("转移用户[{}]从原部门到临时部门[{}]", userDept.getUserId(), tempDept.getId());
         }
     }
 

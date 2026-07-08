@@ -48,7 +48,7 @@ public class NotificationController {
             @PathVariable Long id
     ) {
         notificationService.markAsRead(principal.getId(), id);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     @PutMapping("/read-all")
@@ -56,7 +56,7 @@ public class NotificationController {
             @AuthenticationPrincipal QingxuUserPrincipal principal
     ) {
         notificationService.markAllAsRead(principal.getId());
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     @DeleteMapping("/{id}")
@@ -65,6 +65,6 @@ public class NotificationController {
             @PathVariable Long id
     ) {
         notificationService.deleteNotification(principal.getId(), id);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 }

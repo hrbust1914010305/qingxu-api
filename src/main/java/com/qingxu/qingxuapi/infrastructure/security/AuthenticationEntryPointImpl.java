@@ -1,8 +1,6 @@
 package com.qingxu.qingxuapi.infrastructure.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qingxu.qingxuapi.common.response.ErrorCode;
-import com.qingxu.qingxuapi.common.response.ResponseFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +14,10 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
-    private final ResponseFactory responseFactory;
-    private final ObjectMapper objectMapper;
+    private final SecurityResponseWriter securityResponseWriter;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        response.setStatus(ErrorCode.AUTH_401.getHttpStatus().value());
-        response.setContentType("application/json;charset=UTF-8");
-        objectMapper.writeValue(response.getWriter(), responseFactory.failure(ErrorCode.AUTH_401));
+        securityResponseWriter.write(response, ErrorCode.AUTH_401);
     }
 }

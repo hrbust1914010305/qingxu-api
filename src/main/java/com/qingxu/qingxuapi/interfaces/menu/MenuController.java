@@ -61,7 +61,7 @@ public class MenuController {
                                     HttpServletRequest servletRequest) {
         authApplicationService.currentUser(servletRequest);
         menuApplicationService.updateMenu(id, request);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     @DeleteMapping("/{id}")
@@ -69,7 +69,7 @@ public class MenuController {
     public ApiResponse<Void> delete(@PathVariable Long id, HttpServletRequest servletRequest) {
         authApplicationService.currentUser(servletRequest);
         menuApplicationService.deleteMenu(id);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     @GetMapping("/routes")

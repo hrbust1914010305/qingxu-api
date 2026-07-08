@@ -1,6 +1,7 @@
 package com.qingxu.qingxuapi.infrastructure.websocket;
 
 import com.qingxu.qingxuapi.application.notification.NotificationCreatedEvent;
+import com.qingxu.qingxuapi.common.config.QingxuWebSocketProperties;
 import com.qingxu.qingxuapi.domain.notification.NotificationLevel;
 import com.qingxu.qingxuapi.domain.notification.NotificationType;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysNotificationEntity;
@@ -51,7 +52,7 @@ class NotificationCreatedEventListenerTest {
     @Test
     void pusherUsesSpringUserDestinationWithoutUserPrefix() {
         SimpMessagingTemplate messagingTemplate = mock(SimpMessagingTemplate.class);
-        NotificationWsPusher pusher = new NotificationWsPusher(messagingTemplate);
+        NotificationWsPusher pusher = new NotificationWsPusher(messagingTemplate, new QingxuWebSocketProperties());
         NotificationPushPayload payload = new NotificationPushPayload(
                 "CREATED",
                 1001L,

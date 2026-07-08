@@ -33,7 +33,7 @@ public class DepartmentController {
     @PreAuthorize("hasAuthority('department:category:create')")
     public ApiResponse<Map<String, Long>> createCategory(@Valid @RequestBody CreateDeptCategoryRequest request) {
         Long id = departmentService.createCategory(request);
-        return responseFactory.success(Map.of("id", id));
+        return responseFactory.id(id);
     }
 
     @PutMapping("/category/{id}")
@@ -42,14 +42,14 @@ public class DepartmentController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateDeptCategoryRequest request) {
         departmentService.updateCategory(id, request);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     @DeleteMapping("/category/{id}")
     @PreAuthorize("hasAuthority('department:category:delete')")
     public ApiResponse<Void> deleteCategory(@PathVariable Long id) {
         departmentService.deleteCategory(id);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     // ========== 部门接口 ==========
@@ -75,7 +75,7 @@ public class DepartmentController {
     @PreAuthorize("hasAuthority('department:create')")
     public ApiResponse<Map<String, Long>> create(@Valid @RequestBody CreateDepartmentRequest request) {
         Long id = departmentService.create(request);
-        return responseFactory.success(Map.of("id", id));
+        return responseFactory.id(id);
     }
 
     @PutMapping("/{id}")
@@ -84,7 +84,7 @@ public class DepartmentController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateDepartmentRequest request) {
         departmentService.update(id, request);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     @DeleteMapping("/{ids}")
@@ -100,6 +100,6 @@ public class DepartmentController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateDepartmentStatusRequest request) {
         departmentService.updateStatus(id, request);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 }

@@ -1,5 +1,6 @@
 package com.qingxu.qingxuapi.infrastructure.captcha;
 
+import com.qingxu.qingxuapi.common.config.QingxuCaptchaProperties;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -8,7 +9,7 @@ class CaptchaServiceTest {
 
     @Test
     void captchaCanBeCreatedAndValidatedOnce() {
-        CaptchaService captchaService = new CaptchaService();
+        CaptchaService captchaService = new CaptchaService(new QingxuCaptchaProperties());
 
         CaptchaChallenge challenge = captchaService.createCaptcha();
 

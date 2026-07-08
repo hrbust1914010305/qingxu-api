@@ -53,7 +53,7 @@ public class UserController {
                                      HttpServletRequest servletRequest) {
         CurrentUserResponse currentUser = authApplicationService.currentUser(servletRequest);
         userApplicationService.update(id, request, currentUser.id(), currentUser.username(), servletRequest);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     @DeleteMapping("/{ids}")
@@ -61,7 +61,7 @@ public class UserController {
     public ApiResponse<Void> delete(@PathVariable String ids, HttpServletRequest servletRequest) {
         CurrentUserResponse currentUser = authApplicationService.currentUser(servletRequest);
         userApplicationService.delete(ids, currentUser.id(), currentUser.username(), servletRequest);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     @PutMapping("/{id}/status")
@@ -70,7 +70,7 @@ public class UserController {
                                            HttpServletRequest servletRequest) {
         CurrentUserResponse currentUser = authApplicationService.currentUser(servletRequest);
         userApplicationService.toggleStatus(id, request, currentUser.id(), currentUser.username(), servletRequest);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     @PostMapping("/{id}/reset-password")
@@ -102,7 +102,7 @@ public class UserController {
             @Valid @RequestBody SavePreferenceRequest request) {
         CurrentUserResponse currentUser = authApplicationService.currentUser(servletRequest);
         userApplicationService.saveUserPreference(currentUser.id(), request);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     @PutMapping("/profile")
@@ -111,7 +111,7 @@ public class UserController {
             @Valid @RequestBody UpdateProfileRequest request) {
         CurrentUserResponse currentUser = authApplicationService.currentUser(servletRequest);
         userApplicationService.updateProfile(currentUser.id(), request);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     @PutMapping("/password")
@@ -120,7 +120,7 @@ public class UserController {
             @Valid @RequestBody ChangePasswordRequest request) {
         CurrentUserResponse currentUser = authApplicationService.currentUser(servletRequest);
         userApplicationService.changePassword(currentUser.id(), request, currentUser.id(), currentUser.username(), servletRequest);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
 
     /**
@@ -137,7 +137,6 @@ public class UserController {
                 currentUser.id(),
                 currentUser.username(),
                 servletRequest);
-        return responseFactory.success(null);
+        return responseFactory.success();
     }
     }
-

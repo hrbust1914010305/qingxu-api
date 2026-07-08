@@ -3,6 +3,7 @@ package com.qingxu.qingxuapi.common.permissionchange;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qingxu.qingxuapi.application.notification.NotificationApplicationService;
 import com.qingxu.qingxuapi.application.notification.NotificationCreateCommand;
+import com.qingxu.qingxuapi.common.config.QingxuWebSocketProperties;
 import com.qingxu.qingxuapi.domain.notification.NotificationType;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysPermissionChangeLogEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysPermissionChangeLogMapper;
@@ -61,7 +62,8 @@ class PermissionChangeEventListenerTest {
                 messagingTemplateProvider,
                 redisTemplate,
                 properties,
-                notificationService
+                notificationService,
+                new QingxuWebSocketProperties()
         );
         PermissionChangeEvent event = new PermissionChangeEvent(
                 ChangeType.ROLE,
@@ -110,7 +112,8 @@ class PermissionChangeEventListenerTest {
                 messagingTemplateProvider,
                 redisTemplate,
                 new PermissionChangeProperties(),
-                notificationService
+                notificationService,
+                new QingxuWebSocketProperties()
         );
         PermissionChangeEvent event = new PermissionChangeEvent(
                 ChangeType.ROLE,
@@ -158,7 +161,8 @@ class PermissionChangeEventListenerTest {
                 messagingTemplateProvider,
                 redisTemplate,
                 new PermissionChangeProperties(),
-                notificationService
+                notificationService,
+                new QingxuWebSocketProperties()
         );
         PermissionChangeEvent event = new PermissionChangeEvent(
                 ChangeType.USER_ROLE,

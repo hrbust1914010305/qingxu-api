@@ -20,4 +20,17 @@ public interface SysPermissionMapper extends BaseMapper<SysPermissionEntity> {
             order by p.id
             """)
     List<SysPermissionEntity> selectByUserId(Long userId);
+
+    @Select("""
+            select distinct p.id, p.code, p.name, p.permission_type
+            from sys_permission p
+            inner join sys_role_permission rp on rp.permission_id = p.id
+            inner join sys_role r on r.id = rp.role_id
+            inner join sys_user_role ur on ur.role_id = r.id
+            where ur.user_id = #{userId}
+              and r.status = 'ACTIVE'
+              and p.deleted = 0
+            order by p.id
+            """)
+    List<SysPermissionEntity> selectActiveByUserId(Long userId);
 }
