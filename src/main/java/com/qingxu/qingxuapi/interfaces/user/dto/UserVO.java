@@ -8,6 +8,8 @@ public record UserVO(
         String username,
         String realname,
         String nickname,
+        String avatar,
+        List<UploadFileItemVO> avatarFiles,
         String email,
         String phone,
         String userType,

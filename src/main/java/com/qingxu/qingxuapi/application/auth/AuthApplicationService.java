@@ -254,6 +254,7 @@ public class AuthApplicationService {
                 user.getUsername(),
                 user.getRealname(),
                 user.getNickname(),
+                user.getAvatar(),
                 user.getEmail(),
                 user.getPhone(),
                 user.getTenantId(),

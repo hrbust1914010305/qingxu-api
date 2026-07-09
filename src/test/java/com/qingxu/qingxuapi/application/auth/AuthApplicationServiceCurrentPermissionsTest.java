@@ -41,6 +41,7 @@ class AuthApplicationServiceCurrentPermissionsTest {
                 "alice",
                 null,
                 "Alice",
+                "/api/files/123/download",
                 null,
                 null,
                 "default",
@@ -60,5 +61,26 @@ class AuthApplicationServiceCurrentPermissionsTest {
         assertThat(response.roles()).doesNotContain("roleA");
         assertThat(response.permissions()).doesNotContain("permission:a");
         assertThat(response.permissions()).doesNotContain("department:list", "system:menu:list");
+    }
+
+    @Test
+    void currentUserResponseCarriesAvatarForCurrentUserApi() {
+        CurrentUserResponse currentUser = new CurrentUserResponse(
+                7L,
+                "alice",
+                null,
+                "Alice",
+                "/api/files/123/download",
+                null,
+                null,
+                "default",
+                "INTERNAL",
+                "ACTIVE",
+                false,
+                List.of(),
+                List.of()
+        );
+
+        assertThat(currentUser.avatar()).isEqualTo("/api/files/123/download");
     }
 }

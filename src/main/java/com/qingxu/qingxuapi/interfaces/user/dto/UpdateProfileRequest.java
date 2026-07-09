@@ -13,6 +13,8 @@ public record UpdateProfileRequest(
         @Size(max = 64, message = "真实姓名长度不能超过64个字符")
         String realname,
 
+        String avatar,
+
         @Email(message = "邮箱格式不正确")
         String email,
 

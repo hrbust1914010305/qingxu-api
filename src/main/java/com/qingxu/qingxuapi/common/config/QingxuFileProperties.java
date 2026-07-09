@@ -24,7 +24,7 @@ public class QingxuFileProperties {
             "png", "jpg", "jpeg", "gif", "zip", "rar", "7z",
             "txt", "mp3", "mp4"
     ));
-    private List<String> allowedBizTypes = new ArrayList<>(List.of("default", "knowledge"));
+    private List<String> allowedBizTypes = new ArrayList<>(List.of("default", "knowledge", "user-avatar"));
     private String downloadDisposition = "attachment";
     private Checksum checksum = new Checksum();
 

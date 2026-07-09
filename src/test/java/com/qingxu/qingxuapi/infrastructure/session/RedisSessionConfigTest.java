@@ -46,6 +46,7 @@ class RedisSessionConfigTest {
                 "admin2",
                 null,
                 "admin",
+                null,
                 "12@12.com",
                 "15478451288",
                 "default",

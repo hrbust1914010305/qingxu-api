@@ -3,9 +3,11 @@ package com.qingxu.qingxuapi.application.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qingxu.qingxuapi.common.audit.AuditService;
 import com.qingxu.qingxuapi.common.permissionchange.PermissionChangeDispatcher;
+import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysFileEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysRoleEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysUserEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysDepartmentMapper;
+import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysFileMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysRoleMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysUserDepartmentMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysUserMapper;
@@ -18,8 +20,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -35,6 +39,7 @@ class UserApplicationServiceAssignRolesTest {
     private final SysUserRoleMapper userRoleMapper = mock(SysUserRoleMapper.class);
     private final SysDepartmentMapper deptMapper = mock(SysDepartmentMapper.class);
     private final SysRoleMapper roleMapper = mock(SysRoleMapper.class);
+    private final SysFileMapper fileMapper = mock(SysFileMapper.class);
     private final AuditService auditService = mock(AuditService.class);
     private final SessionRegistry sessionRegistry = mock(SessionRegistry.class);
     private final PermissionChangeDispatcher permissionChangeDispatcher = mock(PermissionChangeDispatcher.class);
@@ -49,6 +54,7 @@ class UserApplicationServiceAssignRolesTest {
             userRoleMapper,
             deptMapper,
             roleMapper,
+            fileMapper,
             auditService,
             sessionRegistry,
             permissionChangeDispatcher
@@ -97,6 +103,82 @@ class UserApplicationServiceAssignRolesTest {
         }
 
         verify(permissionChangeDispatcher, never()).fireUserRoleChange(any(), any(), any(), any());
+    }
+
+    @Test
+    void detailReturnsAvatarAndAvatarFilesForUploadEcho() {
+        Long userId = 2L;
+        SysUserEntity user = activeUser(userId);
+        user.setUsername("alice");
+        user.setNickname("Alice");
+        user.setUserType("INTERNAL");
+        user.setAvatar("/api/files/123/download");
+        when(userMapper.selectById(userId)).thenReturn(user);
+        when(userDeptMapper.selectByUserId(userId)).thenReturn(List.of());
+        when(roleMapper.selectByUserId(userId)).thenReturn(List.of());
+        SysFileEntity avatarFile = new SysFileEntity();
+        avatarFile.setId(123L);
+        avatarFile.setOriginalName("alice-avatar.png");
+        avatarFile.setSize(2048L);
+        when(fileMapper.selectById(123L)).thenReturn(avatarFile);
+
+        var response = service.detail(userId);
+
+        assertThat(response.avatar()).isEqualTo("/api/files/123/download");
+        assertThat(response.avatarFiles()).hasSize(1);
+        assertThat(response.avatarFiles().get(0).id()).isEqualTo(123L);
+        assertThat(response.avatarFiles().get(0).uid()).isEqualTo("avatar-123");
+        assertThat(response.avatarFiles().get(0).name()).isEqualTo("alice-avatar.png");
+        assertThat(response.avatarFiles().get(0).size()).isEqualTo(2048L);
+        assertThat(response.avatarFiles().get(0).url()).isEqualTo("/api/files/123/download");
+        assertThat(response.avatarFiles().get(0).status()).isEqualTo("success");
+        assertThat(response.avatarFiles().get(0).percent()).isEqualTo(100);
+    }
+
+    @Test
+    void createStoresAvatarUrlOnUser() {
+        when(passwordEncoder.encode("Password1!")).thenReturn("encoded");
+        var request = new com.qingxu.qingxuapi.interfaces.user.dto.CreateUserRequest(
+                "alice",
+                "Alice",
+                "Alice",
+                "/api/files/123/download",
+                "",
+                "",
+                "INTERNAL",
+                "Password1!",
+                List.of(),
+                List.of()
+        );
+
+        service.create(request, 1L, "admin", servletRequest);
+
+        var userCaptor = forClass(SysUserEntity.class);
+        verify(userMapper).insert(userCaptor.capture());
+        assertThat(userCaptor.getValue().getAvatar()).isEqualTo("/api/files/123/download");
+    }
+
+    @Test
+    void updateStoresAvatarUrlOnUser() {
+        Long userId = 2L;
+        SysUserEntity user = activeUser(userId);
+        when(userMapper.selectById(userId)).thenReturn(user);
+        var request = new com.qingxu.qingxuapi.interfaces.user.dto.UpdateUserRequest(
+                null,
+                null,
+                "/api/files/456/download",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        service.update(userId, request, 1L, "admin", servletRequest);
+
+        assertThat(user.getAvatar()).isEqualTo("/api/files/456/download");
+        verify(userMapper).updateById(user);
     }
 
     private SysUserEntity activeUser(Long id) {

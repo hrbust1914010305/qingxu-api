@@ -7,6 +7,7 @@ public record CurrentUserResponse(
         String username,
         String realname,
         String nickname,
+        String avatar,
         String email,
         String phone,
         String tenantId,

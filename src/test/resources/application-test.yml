@@ -31,6 +31,7 @@ qingxu:
     allowed-biz-types:
       - default
       - knowledge
+      - user-avatar
     download-disposition: attachment
     checksum:
       enabled: true

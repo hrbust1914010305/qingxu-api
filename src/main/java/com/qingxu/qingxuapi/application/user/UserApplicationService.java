@@ -11,6 +11,7 @@ import com.qingxu.qingxuapi.common.permissionchange.PermissionChangeDispatcher;
 import com.qingxu.qingxuapi.common.response.ErrorCode;
 import com.qingxu.qingxuapi.common.response.PageResponse;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysDepartmentEntity;
+import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysFileEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysRoleEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysUserDepartmentEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysUserEntity;
@@ -19,6 +20,7 @@ import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysUserRoleEntity;
 import com.alibaba.excel.EasyExcel;
 import com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysDepartmentMapper;
+import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysFileMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysRoleMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysUserDepartmentMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysUserMapper;
@@ -61,6 +63,7 @@ public class UserApplicationService {
     private final SysUserRoleMapper userRoleMapper;
     private final SysDepartmentMapper deptMapper;
     private final SysRoleMapper roleMapper;
+    private final SysFileMapper fileMapper;
     private final AuditService auditService;
     private final SessionRegistry sessionRegistry;
     private final PermissionChangeDispatcher permissionChangeDispatcher;
@@ -102,6 +105,9 @@ public class UserApplicationService {
         user.setNickname(request.nickname());
         if (request.realname() != null) {
             user.setRealname(request.realname());
+        }
+        if (request.avatar() != null) {
+            user.setAvatar(StringUtils.hasText(request.avatar()) ? request.avatar() : null);
         }
         if (request.email() != null && !request.email().isBlank()) {
             user.setEmail(request.email());
@@ -202,6 +208,7 @@ public class UserApplicationService {
         user.setUsername(request.username());
         user.setNickname(request.nickname() != null ? request.nickname() : request.username());
         user.setRealname(request.realname());
+        user.setAvatar(StringUtils.hasText(request.avatar()) ? request.avatar() : null);
         user.setPhone(StringUtils.hasText(request.phone()) ? request.phone() : null);
         user.setEmail(StringUtils.hasText(request.email()) ? request.email() : null);
         user.setPasswordHash(passwordEncoder.encode(request.password()));
@@ -253,6 +260,9 @@ public class UserApplicationService {
         }
         if (request.realname() != null) {
             user.setRealname(request.realname());
+        }
+        if (request.avatar() != null) {
+            user.setAvatar(StringUtils.hasText(request.avatar()) ? request.avatar() : null);
         }
         if (request.phone() != null) {
             user.setPhone(StringUtils.hasText(request.phone()) ? request.phone() : null);
@@ -874,6 +884,8 @@ public class UserApplicationService {
                 user.getUsername(),
                 user.getRealname(),
                 user.getNickname(),
+                user.getAvatar(),
+                toAvatarFiles(user.getAvatar()),
                 user.getEmail(),
                 user.getPhone(),
                 user.getUserType(),
@@ -887,6 +899,44 @@ public class UserApplicationService {
                 user.getCreatedAt(),
                 user.getUpdatedAt()
         );
+    }
+
+    private List<UploadFileItemVO> toAvatarFiles(String avatar) {
+        if (!StringUtils.hasText(avatar)) {
+            return List.of();
+        }
+        Long fileId = parseFileId(avatar);
+        String uid = fileId == null ? "avatar-" + Integer.toUnsignedString(avatar.hashCode()) : "avatar-" + fileId;
+        SysFileEntity file = fileId == null ? null : fileMapper.selectById(fileId);
+        return List.of(new UploadFileItemVO(
+                fileId,
+                uid,
+                file != null && StringUtils.hasText(file.getOriginalName()) ? file.getOriginalName() : "avatar",
+                avatar,
+                file != null && file.getSize() != null ? file.getSize() : 0L,
+                "success",
+                100
+        ));
+    }
+
+    private Long parseFileId(String avatar) {
+        String marker = "/api/files/";
+        int start = avatar.indexOf(marker);
+        if (start < 0) {
+            return null;
+        }
+        int idStart = start + marker.length();
+        int idEnd = avatar.indexOf('/', idStart);
+        String value = idEnd < 0 ? avatar.substring(idStart) : avatar.substring(idStart, idEnd);
+        int queryStart = value.indexOf('?');
+        if (queryStart >= 0) {
+            value = value.substring(0, queryStart);
+        }
+        try {
+            return Long.valueOf(value);
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
     }
 
     private String getDeptNameById(Long deptId) {
