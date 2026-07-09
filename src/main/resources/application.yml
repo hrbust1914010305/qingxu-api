@@ -38,6 +38,7 @@ qingxu:
       - /v3/api-docs/**
       - /swagger-ui/**
       - /ws/**
+      - /api/file-preview/source/**
     cors:
       allowed-origins:
         - http://localhost:5173
@@ -105,6 +106,46 @@ qingxu:
     download-disposition: attachment
     checksum:
       enabled: true
+  preview:
+    enabled: true
+    kk-file-view-base-url: http://127.0.0.1:8012
+    public-base-url: http://127.0.0.1:8081/api
+    token-ttl: 10m
+    local-service:
+      auto-start: true
+      java-command: java
+      jar-path: D:/project/qingxu/tools/kkFileView/bin/kkFileView-5.0.0.jar
+      working-directory: D:/project/qingxu/tools/kkFileView/bin
+      bin-folder: D:/project/qingxu/tools/kkFileView/bin
+      trust-host: 127.0.0.1,localhost
+      not-trust-host: default
+      log-file: D:/project/qingxu/tools/kkFileView/log/kkFileView.log
+      startup-timeout: 30s
+    allowed-preview-extensions:
+      - pdf
+      - doc
+      - docx
+      - xls
+      - xlsx
+      - ppt
+      - pptx
+      - txt
+      - md
+      - json
+      - xml
+      - csv
+      - zip
+      - rar
+      - 7z
+      - jpg
+      - jpeg
+      - png
+      - gif
+      - bmp
+      - webp
+      - svg
+      - mp3
+      - mp4
   session:
     timeout: 2h
     redis-namespace: spring:session:qingxu

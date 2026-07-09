@@ -3,17 +3,16 @@ package com.qingxu.qingxuapi.interfaces.file;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.qingxu.qingxuapi.application.auth.AuthApplicationService;
 import com.qingxu.qingxuapi.infrastructure.captcha.CaptchaChallenge;
 import com.qingxu.qingxuapi.infrastructure.captcha.CaptchaService;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysUserEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysUserMapper;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -69,7 +68,7 @@ class FileControllerTest {
 
     @Test
     void uploadStoresFileAndDownloadStreamsContent() throws Exception {
-        MockHttpSession session = loginActiveUser("file-user");
+        Cookie cookie = loginActiveUser("file-user");
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 "hello.txt",
@@ -80,7 +79,7 @@ class FileControllerTest {
         String uploadResponse = mockMvc.perform(multipart("/api/files/upload")
                         .file(file)
                         .param("bizType", "knowledge")
-                        .session(session))
+                        .cookie(cookie))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -95,7 +94,7 @@ class FileControllerTest {
         assertThat(uploadRoot.at("/data/bizType").asText()).isEqualTo("knowledge");
 
         long fileId = uploadRoot.at("/data/id").asLong();
-        byte[] downloadBytes = mockMvc.perform(get("/api/files/{id}/download", fileId).session(session))
+        byte[] downloadBytes = mockMvc.perform(get("/api/files/{id}/download", fileId).cookie(cookie))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Content-Type", MediaType.TEXT_PLAIN_VALUE))
                 .andExpect(header().longValue("Content-Length", 10))
@@ -108,7 +107,7 @@ class FileControllerTest {
 
     @Test
     void uploadRejectsDisallowedExtension() throws Exception {
-        MockHttpSession session = loginActiveUser("extension-user");
+        Cookie cookie = loginActiveUser("extension-user");
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 "malware.exe",
@@ -118,7 +117,7 @@ class FileControllerTest {
 
         String response = mockMvc.perform(multipart("/api/files/upload")
                         .file(file)
-                        .session(session))
+                        .cookie(cookie))
                 .andExpect(status().isBadRequest())
                 .andReturn()
                 .getResponse()
@@ -130,7 +129,7 @@ class FileControllerTest {
 
     @Test
     void multipartUploadCanResumeCompleteAndDownload() throws Exception {
-        MockHttpSession session = loginActiveUser("multipart-user");
+        Cookie cookie = loginActiveUser("multipart-user");
         Map<String, Object> initRequest = Map.of(
                 "fileName", "large.txt",
                 "mimeType", MediaType.TEXT_PLAIN_VALUE,
@@ -143,7 +142,7 @@ class FileControllerTest {
         String initResponse = mockMvc.perform(post("/api/files/multipart/init")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(initRequest))
-                        .session(session))
+                        .cookie(cookie))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -155,10 +154,10 @@ class FileControllerTest {
         assertThat(initRoot.at("/data/totalChunks").asInt()).isEqualTo(3);
         assertThat(initRoot.at("/data/uploadedChunks").isArray()).isTrue();
 
-        uploadChunk(session, uploadId, 0, "hello");
-        uploadChunk(session, uploadId, 1, " worl");
+        uploadChunk(cookie, uploadId, 0, "hello");
+        uploadChunk(cookie, uploadId, 1, " worl");
 
-        String statusResponse = mockMvc.perform(get("/api/files/multipart/{uploadId}/status", uploadId).session(session))
+        String statusResponse = mockMvc.perform(get("/api/files/multipart/{uploadId}/status", uploadId).cookie(cookie))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -166,12 +165,12 @@ class FileControllerTest {
         JsonNode statusRoot = objectMapper.readTree(statusResponse);
         assertThat(statusRoot.at("/data/uploadedChunks")).hasSize(2);
 
-        uploadChunk(session, uploadId, 2, "d");
+        uploadChunk(cookie, uploadId, 2, "d");
 
         String completeResponse = mockMvc.perform(post("/api/files/multipart/{uploadId}/complete", uploadId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}")
-                        .session(session))
+                        .cookie(cookie))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -179,7 +178,7 @@ class FileControllerTest {
 
         JsonNode completeRoot = objectMapper.readTree(completeResponse);
         long fileId = completeRoot.at("/data/id").asLong();
-        byte[] downloadBytes = mockMvc.perform(get("/api/files/{id}/download", fileId).session(session))
+        byte[] downloadBytes = mockMvc.perform(get("/api/files/{id}/download", fileId).cookie(cookie))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -190,24 +189,24 @@ class FileControllerTest {
 
     @Test
     void deletePreventsFutureDownload() throws Exception {
-        MockHttpSession session = loginActiveUser("delete-user");
+        Cookie cookie = loginActiveUser("delete-user");
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 "delete.txt",
                 MediaType.TEXT_PLAIN_VALUE,
                 "delete me".getBytes(StandardCharsets.UTF_8)
         );
-        String uploadResponse = mockMvc.perform(multipart("/api/files/upload").file(file).session(session))
+        String uploadResponse = mockMvc.perform(multipart("/api/files/upload").file(file).cookie(cookie))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
         long fileId = objectMapper.readTree(uploadResponse).at("/data/id").asLong();
 
-        mockMvc.perform(delete("/api/files/{id}", fileId).session(session))
+        mockMvc.perform(delete("/api/files/{id}", fileId).cookie(cookie))
                 .andExpect(status().isOk());
 
-        String downloadResponse = mockMvc.perform(get("/api/files/{id}/download", fileId).session(session))
+        String downloadResponse = mockMvc.perform(get("/api/files/{id}/download", fileId).cookie(cookie))
                 .andExpect(status().isNotFound())
                 .andReturn()
                 .getResponse()
@@ -216,7 +215,7 @@ class FileControllerTest {
         assertThat(root.get("code").asText()).isEqualTo("FILE_NOT_FOUND");
     }
 
-    private void uploadChunk(MockHttpSession session, String uploadId, int chunkIndex, String content) throws Exception {
+    private void uploadChunk(Cookie cookie, String uploadId, int chunkIndex, String content) throws Exception {
         MockMultipartFile chunk = new MockMultipartFile(
                 "chunk",
                 "chunk-%d.part".formatted(chunkIndex),
@@ -230,11 +229,11 @@ class FileControllerTest {
                             request.setMethod("PUT");
                             return request;
                         })
-                        .session(session))
+                        .cookie(cookie))
                 .andExpect(status().isOk());
     }
 
-    private MockHttpSession loginActiveUser(String username) throws Exception {
+    private Cookie loginActiveUser(String username) throws Exception {
         registerUser(username);
         SysUserEntity user = sysUserMapper.selectOne(new LambdaQueryWrapper<SysUserEntity>()
                 .eq(SysUserEntity::getUsername, username));
@@ -253,10 +252,9 @@ class FileControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
-        assertThat(session).isNotNull();
-        assertThat(session.getAttribute(AuthApplicationService.SESSION_CURRENT_USER)).isNotNull();
-        return session;
+        Cookie cookie = loginResult.getResponse().getCookie("QINGXU_SESSION");
+        assertThat(cookie).isNotNull();
+        return cookie;
     }
 
     private void registerUser(String username) throws Exception {

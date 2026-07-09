@@ -221,6 +221,23 @@ public class FileApplicationService {
         }
     }
 
+    public FileDownloadResource getPreviewResource(Long fileId) {
+        SysFileEntity file = getPreviewFile(fileId);
+        try {
+            return new FileDownloadResource(file.getOriginalName(), mimeType(file.getMimeType()), file.getSize(), fileStorageService.load(file.getStoragePath()));
+        } catch (IOException exception) {
+            throw new BusinessException(ErrorCode.FILE_NOT_FOUND);
+        }
+    }
+
+    public SysFileEntity getPreviewFile(Long fileId) {
+        SysFileEntity file = fileMapper.selectById(fileId);
+        if (file == null) {
+            throw new BusinessException(ErrorCode.FILE_NOT_FOUND);
+        }
+        return file;
+    }
+
     private void updateChunk(String uploadId, Integer chunkIndex, MultipartFile chunk, String checksum, String storagePath) {
         SysFileUploadChunkEntity update = new SysFileUploadChunkEntity();
         update.setChunkSize(chunk.getSize());
