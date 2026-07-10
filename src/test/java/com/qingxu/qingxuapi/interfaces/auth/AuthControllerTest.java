@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -244,12 +242,11 @@ class AuthControllerTest {
         assertThat(loginRoot.at("/data/roles").isMissingNode()).isTrue();
         assertThat(loginRoot.at("/data/permissions").isMissingNode()).isTrue();
 
-        MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
-        assertThat(session).isNotNull();
-        assertThat(session.getAttribute(AuthApplicationService.SESSION_CURRENT_USER)).isNotNull();
-        assertThat(session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY)).isNotNull();
+        var sessionCookie = loginResult.getResponse().getCookie("QINGXU_SESSION");
+        assertThat(sessionCookie).isNotNull();
+        assertThat(sessionCookie.getValue()).isNotBlank();
 
-        String currentUserResponse = mockMvc.perform(get("/api/auth/current-user").session(session))
+        String currentUserResponse = mockMvc.perform(get("/api/auth/current-user").cookie(sessionCookie))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -258,10 +255,10 @@ class AuthControllerTest {
         JsonNode currentUserRoot = objectMapper.readTree(currentUserResponse);
         assertThat(currentUserRoot.at("/data/username").asText()).isEqualTo("active-user");
         assertThat(currentUserRoot.at("/data/tenantId").asText()).isEqualTo("default");
-        assertThat(currentUserRoot.at("/data/roles").isArray()).isTrue();
-        assertThat(currentUserRoot.at("/data/permissions").isArray()).isTrue();
+        assertThat(currentUserRoot.at("/data/roles").isMissingNode()).isTrue();
+        assertThat(currentUserRoot.at("/data/permissions").isMissingNode()).isTrue();
 
-        String protectedResponse = mockMvc.perform(get("/api/protected/ping").session(session))
+        String protectedResponse = mockMvc.perform(get("/api/protected/ping").cookie(sessionCookie))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -291,9 +288,11 @@ class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
+        var sessionCookie = loginResult.getResponse().getCookie("QINGXU_SESSION");
+        assertThat(sessionCookie).isNotNull();
+        assertThat(sessionCookie.getValue()).isNotBlank();
 
-        String routesResponse = mockMvc.perform(get("/api/auth/routes").session(session))
+        String routesResponse = mockMvc.perform(get("/api/auth/routes").cookie(sessionCookie))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -302,7 +301,7 @@ class AuthControllerTest {
         JsonNode routesRoot = objectMapper.readTree(routesResponse);
         assertThat(routesRoot.at("/data").isArray()).isTrue();
 
-        String permissionsResponse = mockMvc.perform(get("/api/auth/permissions/current").session(session))
+        String permissionsResponse = mockMvc.perform(get("/api/auth/permissions/current").cookie(sessionCookie))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()

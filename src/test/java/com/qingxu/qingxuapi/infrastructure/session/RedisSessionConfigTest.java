@@ -52,9 +52,7 @@ class RedisSessionConfigTest {
                 "default",
                 "INTERNAL",
                 "ACTIVE",
-                false,
-                List.of("admin"),
-                List.of("system:user:list")
+                false
         );
 
         Object restored = serializer.deserialize(serializer.serialize(currentUser));

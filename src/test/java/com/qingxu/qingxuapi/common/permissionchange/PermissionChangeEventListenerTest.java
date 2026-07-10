@@ -89,6 +89,60 @@ class PermissionChangeEventListenerTest {
     }
 
     @Test
+    void handleAlsoInvalidatesSessionsForAdminRoleChange() {
+        @SuppressWarnings("unchecked")
+        FindByIndexNameSessionRepository<Session> sessionRepository = mock(FindByIndexNameSessionRepository.class);
+        SysPermissionChangeLogMapper auditMapper = mock(SysPermissionChangeLogMapper.class);
+        @SuppressWarnings("unchecked")
+        ObjectProvider<SimpMessagingTemplate> messagingTemplateProvider = mock(ObjectProvider.class);
+        SimpMessagingTemplate messagingTemplate = mock(SimpMessagingTemplate.class);
+        StringRedisTemplate redisTemplate = mock(StringRedisTemplate.class);
+        NotificationApplicationService notificationService = mock(NotificationApplicationService.class);
+        @SuppressWarnings("unchecked")
+        ValueOperations<String, String> valueOperations = mock(ValueOperations.class);
+        PermissionChangeProperties properties = new PermissionChangeProperties();
+        Session session = mock(Session.class);
+        Map<String, Session> sessions = new LinkedHashMap<>();
+        sessions.put("session-1", session);
+
+        when(messagingTemplateProvider.getIfAvailable()).thenReturn(messagingTemplate);
+        when(sessionRepository.findByPrincipalName("2")).thenReturn(sessions);
+        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        when(valueOperations.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(true);
+
+        PermissionChangeEventListener listener = new PermissionChangeEventListener(
+                sessionRepository,
+                auditMapper,
+                new ObjectMapper(),
+                messagingTemplateProvider,
+                redisTemplate,
+                properties,
+                notificationService,
+                new QingxuWebSocketProperties()
+        );
+        PermissionChangeEvent event = new PermissionChangeEvent(
+                ChangeType.ROLE,
+                10L,
+                Set.of(2L),
+                "admin",
+                1L,
+                "update admin role",
+                LocalDateTime.parse("2026-07-06T12:00:00"),
+                "trace-2",
+                true
+        );
+
+        listener.handle(event);
+
+        verify(messagingTemplate).convertAndSendToUser(
+                eq("2"),
+                eq("/queue/permission-reload"),
+                any(PermissionReloadPayload.class)
+        );
+        verify(sessionRepository).deleteById("session-1");
+    }
+
+    @Test
     void handleStillPushesStompMessageWhenAuditIdempotentKeyExists() {
         @SuppressWarnings("unchecked")
         FindByIndexNameSessionRepository<Session> sessionRepository = mock(FindByIndexNameSessionRepository.class);

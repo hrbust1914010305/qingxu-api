@@ -23,10 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * 权限变更事件监听器，在事务提交后执行。
- * 普通分支会失效用户会话并推送 STOMP 消息；admin 分支只推送提醒，不失效会话。
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -45,21 +41,17 @@ public class PermissionChangeEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handle(PermissionChangeEvent event) {
-        boolean adminBranch = event.adminRoleInvolved() && event.changeType() == ChangeType.ROLE;
         Set<Long> userIds = event.affectedUserIds();
+        boolean adminRoleInvolved = event.adminRoleInvolved() && event.changeType() == ChangeType.ROLE;
 
         for (Long userId : userIds) {
             String userKey = String.valueOf(userId);
-
-            pushStompMessage(userKey, event, adminBranch);
-
-            if (!adminBranch) {
-                invalidateSessions(userKey);
-            }
+            pushStompMessage(userKey, event);
+            invalidateSessions(userKey);
         }
 
         createPermissionNotification(event);
-        recordAudit(event, adminBranch);
+        recordAudit(event, adminRoleInvolved);
     }
 
     private void createPermissionNotification(PermissionChangeEvent event) {
@@ -81,7 +73,8 @@ public class PermissionChangeEventListener {
                     event.traceId()
             ));
         } catch (Exception ex) {
-            log.warn("权限变更通知写入失败: type={} entityId={} reason={}",
+            log.warn(
+                    "权限变更通知写入失败: type={} entityId={} reason={}",
                     event.changeType(),
                     event.entityId(),
                     ex.getMessage()
@@ -104,7 +97,7 @@ public class PermissionChangeEventListener {
         }
     }
 
-    private void pushStompMessage(String userKey, PermissionChangeEvent event, boolean adminBranch) {
+    private void pushStompMessage(String userKey, PermissionChangeEvent event) {
         SimpMessagingTemplate template = messagingTemplateProvider.getIfAvailable();
         if (template == null) {
             log.warn("SimpMessagingTemplate 未就绪，跳过 STOMP 推送 user={}", userKey);
@@ -114,13 +107,13 @@ public class PermissionChangeEventListener {
                 event.changeType().name(),
                 event.reason(),
                 event.occurredAt().toString(),
-                !adminBranch,
+                true,
                 event.traceId()
         );
         template.convertAndSendToUser(userKey, webSocketProperties.getPermissionReloadQueue(), payload);
     }
 
-    private void recordAudit(PermissionChangeEvent event, boolean adminBranch) {
+    private void recordAudit(PermissionChangeEvent event, boolean adminRoleInvolved) {
         try {
             Boolean acquired = redisTemplate.opsForValue().setIfAbsent(
                     IDEMPOTENT_KEY_PREFIX + event.changeType() + ":" + event.entityId(),
@@ -134,7 +127,7 @@ public class PermissionChangeEventListener {
             entity.setChangeType(event.changeType().name());
             entity.setEntityId(event.entityId());
             entity.setAffectedUsers(objectMapper.writeValueAsString(List.copyOf(event.affectedUserIds())));
-            entity.setAdminBranch(adminBranch);
+            entity.setAdminBranch(adminRoleInvolved);
             entity.setOperatorId(event.operatorId());
             entity.setOperatorName(event.operator());
             entity.setReason(event.reason());

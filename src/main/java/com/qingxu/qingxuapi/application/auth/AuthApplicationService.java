@@ -7,10 +7,8 @@ import com.qingxu.qingxuapi.common.exception.BusinessException;
 import com.qingxu.qingxuapi.common.exception.UnauthorizedException;
 import com.qingxu.qingxuapi.common.response.ErrorCode;
 import com.qingxu.qingxuapi.infrastructure.captcha.CaptchaService;
-import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysPermissionEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysRoleEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysUserEntity;
-import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysPermissionMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysRoleMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysUserMapper;
 import com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal;
@@ -47,40 +45,13 @@ public class AuthApplicationService {
     private static final String DEFAULT_USER_TYPE = "EXTERNAL";
     private static final String REGISTER_PENDING_MESSAGE = "注册已提交，请等待管理员审核";
 
-    private static final List<String> DEPT_PERMISSION_CODES = List.of(
-            "department:list",
-            "department:view",
-            "department:create",
-            "department:update",
-            "department:delete",
-            "department:category:list",
-            "department:category:create",
-            "department:category:update",
-            "department:category:delete"
-    );
-
-    private static final List<GrantedAuthority> DEPT_AUTHORITIES = DEPT_PERMISSION_CODES.stream()
-            .map(SimpleGrantedAuthority::new)
-            .collect(Collectors.toList());
-
-    private static final List<String> MENU_PERMISSION_CODES = List.of(
-            "system:menu:list",
-            "system:menu:create",
-            "system:menu:update",
-            "system:menu:delete"
-    );
-
-    private static final List<GrantedAuthority> MENU_AUTHORITIES = MENU_PERMISSION_CODES.stream()
-            .map(SimpleGrantedAuthority::new)
-            .collect(Collectors.toList());
-
     private final CaptchaService captchaService;
     private final PasswordEncoder passwordEncoder;
     private final AuditService auditService;
     private final SysUserMapper sysUserMapper;
     private final SysRoleMapper roleMapper;
-    private final SysPermissionMapper permissionMapper;
     private final SessionRegistry sessionRegistry;
+    private final UserPermissionService userPermissionService;
     private final com.qingxu.qingxuapi.application.user.UserApplicationService userApplicationService;
 
     public CurrentUserResponse login(LoginRequest request, HttpServletRequest servletRequest) {
@@ -114,17 +85,14 @@ public class AuthApplicationService {
 
         resetLoginState(user, servletRequest);
 
-        List<SysRoleEntity> roles = roleMapper.selectByUserId(user.getId());
-        List<SysPermissionEntity> permissions = permissionMapper.selectByUserId(user.getId());
+        List<SysRoleEntity> roles = roleMapper.selectActiveByUserId(user.getId());
         List<String> roleNames = roles.stream().map(SysRoleEntity::getCode).collect(Collectors.toList());
-        List<String> permissionCodes = permissions.stream().map(SysPermissionEntity::getCode).collect(Collectors.toList());
+        List<String> permissionCodes = userPermissionService.resolveActivePermissionCodes(user.getId());
         List<GrantedAuthority> authorities = new ArrayList<>(permissionCodes.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList()));
-        authorities.addAll(DEPT_AUTHORITIES);
-        authorities.addAll(MENU_AUTHORITIES);
 
-        CurrentUserResponse currentUserResponse = toCurrentUserResponse(user, roleNames, permissionCodes);
+        CurrentUserResponse currentUserResponse = toCurrentUserResponse(user);
 
         QingxuUserPrincipal principal = new QingxuUserPrincipal(
                 user.getId(),
@@ -241,14 +209,12 @@ public class AuthApplicationService {
         List<String> activeRoles = roleMapper.selectActiveByUserId(user.id()).stream()
                 .map(SysRoleEntity::getCode)
                 .collect(Collectors.toList());
-        List<String> allPermissions = permissionMapper.selectActiveByUserId(user.id()).stream()
-                .map(SysPermissionEntity::getCode)
-                .collect(Collectors.toCollection(ArrayList::new));
+        List<String> allPermissions = new ArrayList<>(userPermissionService.resolveActivePermissionCodes(user.id()));
 
         return new PermissionResponse(activeRoles, allPermissions);
     }
 
-    private CurrentUserResponse toCurrentUserResponse(SysUserEntity user, List<String> roles, List<String> permissions) {
+    private CurrentUserResponse toCurrentUserResponse(SysUserEntity user) {
         return new CurrentUserResponse(
                 user.getId(),
                 user.getUsername(),
@@ -260,9 +226,7 @@ public class AuthApplicationService {
                 user.getTenantId(),
                 user.getUserType(),
                 user.getStatus(),
-                user.getNeedPasswordChange(),
-                roles,
-                permissions
+                user.getNeedPasswordChange()
         );
     }
 

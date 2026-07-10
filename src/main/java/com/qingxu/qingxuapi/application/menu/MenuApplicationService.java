@@ -33,6 +33,7 @@ public class MenuApplicationService {
     private final SysRoleMapper roleMapper;
     private final SysRoleMenuMapper roleMenuMapper;
     private final MenuTreeHelper menuTreeHelper;
+    private final MenuVisibilityService menuVisibilityService;
     private final PermissionChangeDispatcher permissionChangeDispatcher;
 
     public List<MenuTreeNode> getMenuTree(MenuTreeQueryRequest request) {
@@ -239,7 +240,7 @@ public class MenuApplicationService {
     }
 
     private Set<Long> getUserAllowedMenuIds(Long userId) {
-        List<SysRoleEntity> roles = roleMapper.selectByUserId(userId);
+        List<SysRoleEntity> roles = roleMapper.selectActiveByUserId(userId);
         if (roles.isEmpty()) {
             return Set.of();
         }
@@ -254,14 +255,15 @@ public class MenuApplicationService {
         List<SysMenuEntity> allMenus = menuMapper.selectList(
                 new LambdaQueryWrapper<SysMenuEntity>()
                         .orderByAsc(SysMenuEntity::getSortOrder));
+        List<SysMenuEntity> visibleMenus = menuVisibilityService.filterVisibleMenus(allMenus);
         if (allowedMenuIds.isEmpty()) {
-            return menuTreeHelper.buildRouteTree(allMenus);
+            return menuTreeHelper.buildRouteTree(visibleMenus);
         }
-        List<SysMenuEntity> filteredMenus = allMenus.stream()
+        List<SysMenuEntity> filteredMenus = visibleMenus.stream()
                 .filter(menu -> allowedMenuIds.contains(menu.getId()))
                 .toList();
-        Set<Long> reachableIds = collectReachableParentIds(filteredMenus, allMenus);
-        List<SysMenuEntity> resultMenus = allMenus.stream()
+        Set<Long> reachableIds = collectReachableParentIds(filteredMenus, visibleMenus);
+        List<SysMenuEntity> resultMenus = visibleMenus.stream()
                 .filter(menu -> allowedMenuIds.contains(menu.getId()) || reachableIds.contains(menu.getId()))
                 .toList();
         return menuTreeHelper.buildRouteTree(resultMenus);

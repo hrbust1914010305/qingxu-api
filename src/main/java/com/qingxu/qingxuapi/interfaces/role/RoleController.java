@@ -90,7 +90,7 @@ public class RoleController {
     }
 
     @PutMapping("/{id}/menus")
-    @PreAuthorize("hasAuthority('system:role:update')")
+    @PreAuthorize("hasAuthority('system:role:assignPermissions')")
     public ApiResponse<Void> assignMenus(@PathVariable Long id,
                                          @RequestBody @Valid AssignMenusRequest request) {
         roleApplicationService.assignMenus(id, request.menuIds());

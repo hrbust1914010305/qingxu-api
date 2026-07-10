@@ -1,10 +1,9 @@
 package com.qingxu.qingxuapi.infrastructure.security;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysPermissionEntity;
+import com.qingxu.qingxuapi.application.auth.UserPermissionService;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysRoleEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysUserEntity;
-import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysPermissionMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysRoleMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysUserMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +23,7 @@ public class QingxuUserDetailsService implements UserDetailsService {
 
     private final SysUserMapper sysUserMapper;
     private final SysRoleMapper sysRoleMapper;
-    private final SysPermissionMapper sysPermissionMapper;
+    private final UserPermissionService userPermissionService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -63,7 +61,7 @@ public class QingxuUserDetailsService implements UserDetailsService {
         if (user == null || user.getId() == null) {
             return List.of();
         }
-        return sysRoleMapper.selectByUserId(user.getId())
+        return sysRoleMapper.selectActiveByUserId(user.getId())
                 .stream()
                 .map(SysRoleEntity::getCode)
                 .filter(code -> code != null && !code.isBlank())
@@ -74,10 +72,6 @@ public class QingxuUserDetailsService implements UserDetailsService {
         if (user == null || user.getId() == null) {
             return List.of();
         }
-        return sysPermissionMapper.selectByUserId(user.getId())
-                .stream()
-                .map(SysPermissionEntity::getCode)
-                .filter(code -> code != null && !code.isBlank())
-                .toList();
+        return userPermissionService.resolveActivePermissionCodes(user.getId());
     }
 }

@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('system:user:view')")
+    @PreAuthorize("hasAuthority('system:user:list')")
     public ApiResponse<UserVO> detail(@PathVariable Long id, HttpServletRequest servletRequest) {
         authApplicationService.currentUser(servletRequest);
         return responseFactory.success(userApplicationService.detail(id));
@@ -65,7 +65,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}/status")
-    @PreAuthorize("hasAuthority('system:user:update')")
+    @PreAuthorize("hasAuthority('system:user:toggleStatus')")
     public ApiResponse<Void> toggleStatus(@PathVariable Long id, @Valid @RequestBody ToggleStatusRequest request,
                                            HttpServletRequest servletRequest) {
         CurrentUserResponse currentUser = authApplicationService.currentUser(servletRequest);
@@ -74,7 +74,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/reset-password")
-    @PreAuthorize("hasAuthority('system:user:update')")
+    @PreAuthorize("hasAuthority('system:user:resetPassword')")
     public ApiResponse<ResetPasswordResult> resetPassword(@PathVariable Long id, HttpServletRequest servletRequest) {
         CurrentUserResponse currentUser = authApplicationService.currentUser(servletRequest);
         ResetPasswordResult result = userApplicationService.resetPassword(id, currentUser.id(), currentUser.username(), servletRequest);

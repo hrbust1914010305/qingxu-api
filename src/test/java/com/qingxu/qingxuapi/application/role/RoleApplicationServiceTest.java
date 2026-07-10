@@ -5,10 +5,8 @@ import com.qingxu.qingxuapi.common.permissionchange.PermissionChangeDispatcher;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysMenuEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysRoleEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysMenuMapper;
-import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysPermissionMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysRoleMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysRoleMenuMapper;
-import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysRolePermissionMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysUserRoleMapper;
 import org.junit.jupiter.api.Test;
 
@@ -26,16 +24,12 @@ class RoleApplicationServiceTest {
         SysRoleMapper roleMapper = mock(SysRoleMapper.class);
         SysRoleMenuMapper roleMenuMapper = mock(SysRoleMenuMapper.class);
         SysMenuMapper menuMapper = mock(SysMenuMapper.class);
-        SysRolePermissionMapper rolePermissionMapper = mock(SysRolePermissionMapper.class);
-        SysPermissionMapper permissionMapper = mock(SysPermissionMapper.class);
         SysUserRoleMapper userRoleMapper = mock(SysUserRoleMapper.class);
         PermissionChangeDispatcher permissionChangeDispatcher = mock(PermissionChangeDispatcher.class);
         RoleApplicationService service = new RoleApplicationService(
                 roleMapper,
                 roleMenuMapper,
                 menuMapper,
-                rolePermissionMapper,
-                permissionMapper,
                 userRoleMapper,
                 permissionChangeDispatcher
         );
