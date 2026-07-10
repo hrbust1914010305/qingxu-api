@@ -1,6 +1,7 @@
 package com.qingxu.qingxuapi.application.auth;
 
 import com.qingxu.qingxuapi.common.audit.AuditService;
+import com.qingxu.qingxuapi.application.user.UserApplicationService;
 import com.qingxu.qingxuapi.infrastructure.captcha.CaptchaService;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysRoleEntity;
 import com.qingxu.qingxuapi.infrastructure.persistence.entity.SysUserEntity;
@@ -8,6 +9,7 @@ import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysRoleMapper;
 import com.qingxu.qingxuapi.infrastructure.persistence.mapper.SysUserMapper;
 import com.qingxu.qingxuapi.interfaces.auth.dto.CurrentUserResponse;
 import com.qingxu.qingxuapi.interfaces.auth.dto.LoginRequest;
+import com.qingxu.qingxuapi.interfaces.auth.dto.RegisterRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -123,6 +126,46 @@ class AuthApplicationServiceCurrentPermissionsTest {
                 .containsExactlyInAnyOrder("system:department:list", "system:department:create");
         verify(sessionRegistry).registerNewSession(any(), any());
         SecurityContextHolder.clearContext();
+    }
+
+    @Test
+    void registerAssignsDefaultUserRoleAfterCreatingPendingUser() {
+        CaptchaService captchaService = mock(CaptchaService.class);
+        PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
+        SysUserMapper userMapper = mock(SysUserMapper.class);
+        UserApplicationService userApplicationService = mock(UserApplicationService.class);
+        AuthApplicationService service = new AuthApplicationService(
+                captchaService,
+                passwordEncoder,
+                mock(AuditService.class),
+                userMapper,
+                mock(SysRoleMapper.class),
+                mock(SessionRegistry.class),
+                mock(UserPermissionService.class),
+                userApplicationService
+        );
+        when(passwordEncoder.encode("Password1!")).thenReturn("encoded");
+        when(userMapper.selectOne(any())).thenReturn(null);
+        doAnswer(invocation -> {
+            SysUserEntity user = invocation.getArgument(0);
+            user.setId(21L);
+            return 1;
+        }).when(userMapper).insert(any(SysUserEntity.class));
+
+        service.register(new RegisterRequest(
+                "alice",
+                "Alice",
+                "alice@example.com",
+                "",
+                "Password1!",
+                "Password1!",
+                "key",
+                "code",
+                true
+        ), mock(HttpServletRequest.class));
+
+        verify(userApplicationService).joinRootTempDept(21L);
+        verify(userApplicationService).assignDefaultUserRole(21L);
     }
 
     private AuthApplicationService service(

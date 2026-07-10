@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentCaptor.forClass;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -138,6 +139,7 @@ class UserApplicationServiceAssignRolesTest {
     @Test
     void createStoresAvatarUrlOnUser() {
         when(passwordEncoder.encode("Password1!")).thenReturn("encoded");
+        when(roleMapper.selectOne(any())).thenReturn(role(9L));
         var request = new com.qingxu.qingxuapi.interfaces.user.dto.CreateUserRequest(
                 "alice",
                 "Alice",
@@ -156,6 +158,38 @@ class UserApplicationServiceAssignRolesTest {
         var userCaptor = forClass(SysUserEntity.class);
         verify(userMapper).insert(userCaptor.capture());
         assertThat(userCaptor.getValue().getAvatar()).isEqualTo("/api/files/123/download");
+    }
+
+    @Test
+    void createAssignsDefaultUserRoleWhenRoleIdsAreEmpty() {
+        when(passwordEncoder.encode("Password1!")).thenReturn("encoded");
+        doAnswer(invocation -> {
+            SysUserEntity user = invocation.getArgument(0);
+            user.setId(20L);
+            return 1;
+        }).when(userMapper).insert(any(SysUserEntity.class));
+        SysRoleEntity defaultRole = role(9L);
+        defaultRole.setCode("default_user");
+        when(roleMapper.selectOne(any())).thenReturn(defaultRole);
+        var request = new com.qingxu.qingxuapi.interfaces.user.dto.CreateUserRequest(
+                "alice",
+                "Alice",
+                "Alice",
+                null,
+                "",
+                "",
+                "INTERNAL",
+                "Password1!",
+                List.of(),
+                List.of()
+        );
+
+        service.create(request, 1L, "admin", servletRequest);
+
+        var userRoleCaptor = forClass(com.qingxu.qingxuapi.infrastructure.persistence.entity.SysUserRoleEntity.class);
+        verify(userRoleMapper).insert(userRoleCaptor.capture());
+        assertThat(userRoleCaptor.getValue().getUserId()).isEqualTo(20L);
+        assertThat(userRoleCaptor.getValue().getRoleId()).isEqualTo(9L);
     }
 
     @Test

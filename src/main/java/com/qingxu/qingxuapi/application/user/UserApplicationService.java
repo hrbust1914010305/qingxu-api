@@ -55,6 +55,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserApplicationService {
 
+    public static final String DEFAULT_USER_ROLE_CODE = "default_user";
+
     private final SysUserPreferenceMapper preferenceMapper;
     private final SysUserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
@@ -231,6 +233,8 @@ public class UserApplicationService {
 
         if (request.roleIds() != null && !request.roleIds().isEmpty()) {
             saveUserRoleRelations(user.getId(), request.roleIds());
+        } else {
+            assignDefaultUserRole(user.getId());
         }
 
         auditService.record(AuditEventType.USER_CREATE, true, currentUsername, currentUserId, servletRequest);
@@ -763,6 +767,17 @@ public class UserApplicationService {
                 userDeptMapper.insert(userDept);
             }
         }
+    }
+
+    public void assignDefaultUserRole(Long userId) {
+        SysRoleEntity defaultRole = roleMapper.selectOne(
+                new LambdaQueryWrapper<SysRoleEntity>()
+                        .eq(SysRoleEntity::getCode, DEFAULT_USER_ROLE_CODE)
+                        .eq(SysRoleEntity::getStatus, "ACTIVE"));
+        if (defaultRole == null) {
+            throw new BusinessException(ErrorCode.ROLE_NOT_FOUND, "默认用户角色不存在或未启用: " + DEFAULT_USER_ROLE_CODE);
+        }
+        saveUserRoleRelations(userId, List.of(defaultRole.getId()));
     }
 
     private List<Long> filterOutTempDepts(List<Long> deptIds) {

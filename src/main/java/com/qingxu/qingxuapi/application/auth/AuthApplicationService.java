@@ -185,6 +185,7 @@ public class AuthApplicationService {
             throw new BusinessException(ErrorCode.VALIDATION_ERROR, "用户已存在");
         }
         userApplicationService.joinRootTempDept(user.getId());
+        userApplicationService.assignDefaultUserRole(user.getId());
         auditService.record(AuditEventType.REGISTER_SUCCESS, true, request.username(), null, servletRequest);
         return new RegisterResult(true, "PENDING", REGISTER_PENDING_MESSAGE);
     }
