@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/department")
+@RequestMapping("/department")
 @RequiredArgsConstructor
 public class DepartmentController {
 

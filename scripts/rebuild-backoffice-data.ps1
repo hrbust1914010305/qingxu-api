@@ -176,12 +176,12 @@ function Login {
         throw "Provide either -Cookie 'QINGXU_SESSION=...' or -Password, -CaptchaKey and -Captcha."
     }
     Step "Login $Username"
-    Api POST "/api/auth/login" @{ username = $Username; password = $Password; captchaKey = $CaptchaKey; captcha = $Captcha } | Out-Null
+    Api POST "/auth/login" @{ username = $Username; password = $Password; captchaKey = $CaptchaKey; captcha = $Captcha } | Out-Null
 }
 
 function ValidateSession {
     try {
-        $currentUser = Api GET "/api/auth/current-user"
+        $currentUser = Api GET "/auth/current-user"
     } catch {
         throw @"
 Session validation failed.
@@ -205,15 +205,15 @@ $($_.Exception.Message)
 }
 
 function Users {
-    return @((Api GET "/api/user?page=1&pageSize=500").records)
+    return @((Api GET "/user?page=1&pageSize=500").records)
 }
 
 function Roles {
-    return @((Api GET "/api/role/list?current=1&pageSize=500").records)
+    return @((Api GET "/role/list?current=1&pageSize=500").records)
 }
 
 function DeptTree {
-    return @(Api GET "/api/department/tree")
+    return @(Api GET "/department/tree")
 }
 
 function FlattenDept($Nodes, [int]$Depth = 0) {
@@ -256,8 +256,8 @@ function ResetAdmin2($AllUsers, $AllRoles) {
     }
     Write-Host "Ensure admin2 keeps admin role."
     if ($Execute) {
-        Api PUT "/api/user/roles" @{ userIds = @([long]$admin2.id); roleIds = @([long]$admin.id) } | Out-Null
-        Api PUT "/api/user/$($admin2.id)" @{ deptIds = @() } | Out-Null
+        Api PUT "/user/roles" @{ userIds = @([long]$admin2.id); roleIds = @([long]$admin.id) } | Out-Null
+        Api PUT "/user/$($admin2.id)" @{ deptIds = @() } | Out-Null
     }
 }
 
@@ -270,7 +270,7 @@ function RemoveOldUsers($AllUsers) {
     $ids = ($old | ForEach-Object { $_.id }) -join ","
     Write-Host "Users to delete: $($old.Count) ($ids)"
     if ($Execute) {
-        Api DELETE "/api/user/$ids" | Out-Null
+        Api DELETE "/user/$ids" | Out-Null
     }
 }
 
@@ -278,7 +278,7 @@ function RemoveOldRoles($AllRoles) {
     foreach ($role in @($AllRoles | Where-Object { $_.code -ne "admin" -and $_.code -ne $DefaultUserRole.code })) {
         Write-Host "Role to delete: $($role.code) ($($role.id))"
         if ($Execute) {
-            Api DELETE "/api/role/$($role.id)" | Out-Null
+            Api DELETE "/role/$($role.id)" | Out-Null
         }
     }
 }
@@ -292,7 +292,7 @@ function EnsureDefaultUserRole {
     $roles = Roles
     $role = FirstWhere $roles "code" $DefaultUserRole.code
     if (-not $role) {
-        $role = Api POST "/api/role" @{
+        $role = Api POST "/role" @{
             code = $DefaultUserRole.code
             name = $DefaultUserRole.name
             status = "ACTIVE"
@@ -302,7 +302,7 @@ function EnsureDefaultUserRole {
         }
     }
 
-    Api PUT "/api/role/$($role.id)/menus" @{ menuIds = @(1) } | Out-Null
+    Api PUT "/role/$($role.id)/menus" @{ menuIds = @(1) } | Out-Null
 }
 
 function RemoveOldDepartments($Tree) {
@@ -314,7 +314,7 @@ function RemoveOldDepartments($Tree) {
     foreach ($dept in $old) {
         Write-Host "Department to delete: $($dept.name) ($($dept.id))"
         if ($Execute) {
-            Api DELETE "/api/department/$($dept.id)" | Out-Null
+            Api DELETE "/department/$($dept.id)" | Out-Null
         }
     }
 }
@@ -324,7 +324,7 @@ function CreateDepartments([long]$RootId) {
     foreach ($dept in $BusinessDepartments) {
         Write-Host "Department to create: $($dept.name)"
         if ($Execute) {
-            $data = Api POST "/api/department" @{
+            $data = Api POST "/department" @{
                 parentId = $RootId
                 name = $dept.name
                 leaderId = $null
@@ -346,7 +346,7 @@ function CreateRoles {
     foreach ($role in $BusinessRoles) {
         Write-Host "Role to create: $($role.code)"
         if ($Execute) {
-            $data = Api POST "/api/role" @{
+            $data = Api POST "/role" @{
                 code = $role.code
                 name = $role.name
                 status = "ACTIVE"
@@ -356,7 +356,7 @@ function CreateRoles {
             }
             $ids[$role.code] = [long]$data.id
             if ($BusinessRoleMenuIds.Count -gt 0) {
-                Api PUT "/api/role/$($data.id)/menus" @{ menuIds = @($BusinessRoleMenuIds | ForEach-Object { [long]$_ }) } | Out-Null
+                Api PUT "/role/$($data.id)/menus" @{ menuIds = @($BusinessRoleMenuIds | ForEach-Object { [long]$_ }) } | Out-Null
             }
         }
     }
@@ -379,7 +379,7 @@ function CreateUsers($DeptIds, $RoleIds) {
         $phone = "1390001{0:D4}" -f $index
         Write-Host "User to create: $($user.username) -> $($user.dept) / $($user.roles -join ',')"
         if ($Execute) {
-            Api POST "/api/user" @{
+            Api POST "/user" @{
                 username = $user.username
                 nickname = $user.realname
                 realname = $user.realname

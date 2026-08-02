@@ -11,7 +11,7 @@ public class QingxuPreviewProperties {
 
     private boolean enabled = true;
     private String kkFileViewBaseUrl = "http://127.0.0.1:8012";
-    private String publicBaseUrl = "http://127.0.0.1:8081/api";
+    private String publicBaseUrl = "http://127.0.0.1:8081";
     private Duration tokenTtl = Duration.ofMinutes(10);
     private LocalService localService = new LocalService();
     private List<String> allowedPreviewExtensions = new ArrayList<>(List.of(

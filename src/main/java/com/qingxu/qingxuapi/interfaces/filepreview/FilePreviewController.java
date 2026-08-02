@@ -22,7 +22,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @RestController
-@RequestMapping("/api/file-preview")
+@RequestMapping("/file-preview")
 @RequiredArgsConstructor
 public class FilePreviewController {
 

@@ -1,0 +1,20 @@
+package com.qingxu.qingxuapi.domain.knowledge;
+
+public enum KnowledgeIndexStage {
+    LOAD_FILE,
+    PARSE_DOCUMENT,
+    NORMALIZE_ELEMENTS,
+    NORMALIZE_TEXT,
+    DETECT_STRUCTURE,
+    BUILD_BLOCKS,
+    SPLIT_LONG_BLOCKS,
+    MERGE_SMALL_BLOCKS,
+    BUILD_OVERLAP,
+    FINALIZE_CHUNKS,
+    CHUNK_ELEMENTS,
+    EMBED_CHUNKS,
+    STORE_VECTORS,
+    EXTRACT_GRAPH,
+    STORE_GRAPH,
+    DONE
+}

@@ -1,0 +1,378 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.qingxu:qingxu-api >------------------------
+[INFO] Building qingxu-api 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.5.3:run (default-cli) > test-compile @ qingxu-api >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ qingxu-api ---
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] Copying 30 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.0:compile (default-compile) @ qingxu-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ qingxu-api ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ qingxu-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:3.5.3:run (default-cli) < test-compile @ qingxu-api <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.5.3:run (default-cli) @ qingxu-api ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.3)
+
+2026-07-13T21:31:25.665+08:00  INFO 12252 --- [qingxu-api] [           main] c.qingxu.qingxuapi.QingxuApiApplication  : Starting QingxuApiApplication using Java 21.0.8 with PID 12252 (D:\project\qingxu\qingxu-api\target\classes started by 韩晓龙 in D:\project\qingxu\qingxu-api)
+2026-07-13T21:31:25.668+08:00 DEBUG 12252 --- [qingxu-api] [           main] c.qingxu.qingxuapi.QingxuApiApplication  : Running with Spring Boot v3.5.3, Spring v6.2.8
+2026-07-13T21:31:25.669+08:00  INFO 12252 --- [qingxu-api] [           main] c.qingxu.qingxuapi.QingxuApiApplication  : The following 1 profile is active: "dev"
+2026-07-13T21:31:27.466+08:00  INFO 12252 --- [qingxu-api] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-07-13T21:31:27.470+08:00  INFO 12252 --- [qingxu-api] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-07-13T21:31:27.556+08:00  INFO 12252 --- [qingxu-api] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 69 ms. Found 0 Redis repository interfaces.
+2026-07-13T21:31:28.471+08:00  INFO 12252 --- [qingxu-api] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2026-07-13T21:31:28.493+08:00  INFO 12252 --- [qingxu-api] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-13T21:31:28.493+08:00  INFO 12252 --- [qingxu-api] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2026-07-13T21:31:28.730+08:00  INFO 12252 --- [qingxu-api] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-07-13T21:31:28.736+08:00  INFO 12252 --- [qingxu-api] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2992 ms
+2026-07-13T21:31:29.078+08:00 DEBUG 12252 --- [qingxu-api] [           main] o.s.w.f.ServerHttpObservationFilter      : Filter 'webMvcObservationFilter' configured for use
+2026-07-13T21:31:29.078+08:00 DEBUG 12252 --- [qingxu-api] [           main] c.q.q.common.config.TraceIdFilter        : Filter 'traceIdFilter' configured for use
+ _ _   |_  _ _|_. ___ _ |    _ 
+| | |\/|_)(_| | |_\  |_)||_|_\ 
+     /               |         
+                        3.5.12 
+2026-07-13T21:31:29.479+08:00  INFO 12252 --- [qingxu-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-07-13T21:31:29.816+08:00  INFO 12252 --- [qingxu-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@36ecf9f6
+2026-07-13T21:31:29.820+08:00  INFO 12252 --- [qingxu-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-07-13T21:31:29.855+08:00  INFO 12252 --- [qingxu-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:5432/qingxu (PostgreSQL 18.4)
+2026-07-13T21:31:29.870+08:00  WARN 12252 --- [qingxu-api] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 18.4 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 17.
+2026-07-13T21:31:29.968+08:00  INFO 12252 --- [qingxu-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 30 migrations (execution time 00:00.078s)
+2026-07-13T21:31:30.048+08:00  INFO 12252 --- [qingxu-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": 30
+2026-07-13T21:31:30.052+08:00  INFO 12252 --- [qingxu-api] [           main] o.f.core.internal.command.DbMigrate      : Schema "public" is up to date. No migration necessary.
+2026-07-13T21:31:31.638+08:00 DEBUG 12252 --- [qingxu-api] [           main] o.s.s.jackson2.SecurityJackson2Modules   : Loaded module org.springframework.security.jackson2.CoreJackson2Module, now registering
+2026-07-13T21:31:31.639+08:00 DEBUG 12252 --- [qingxu-api] [           main] o.s.s.jackson2.SecurityJackson2Modules   : Loaded module org.springframework.security.web.jackson2.WebJackson2Module, now registering
+2026-07-13T21:31:31.639+08:00 DEBUG 12252 --- [qingxu-api] [           main] o.s.s.jackson2.SecurityJackson2Modules   : Loaded module org.springframework.security.web.server.jackson2.WebServerJackson2Module, now registering
+2026-07-13T21:31:31.639+08:00 DEBUG 12252 --- [qingxu-api] [           main] o.s.s.jackson2.SecurityJackson2Modules   : Loaded module org.springframework.security.web.jackson2.WebServletJackson2Module, now registering
+2026-07-13T21:31:31.640+08:00 DEBUG 12252 --- [qingxu-api] [           main] o.s.s.jackson2.SecurityJackson2Modules   : Loaded module com.fasterxml.jackson.datatype.jsr310.JavaTimeModule, now registering
+2026-07-13T21:31:32.053+08:00  INFO 12252 --- [qingxu-api] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name qingxuUserDetailsService
+2026-07-13T21:31:32.184+08:00 DEBUG 12252 --- [qingxu-api] [           main] o.s.w.s.s.s.WebSocketHandlerMapping      : Patterns [/ws/**] in 'stompWebSocketHandlerMapping'
+2026-07-13T21:31:32.310+08:00 DEBUG 12252 --- [qingxu-api] [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : 79 mappings in 'requestMappingHandlerMapping'
+2026-07-13T21:31:32.335+08:00 DEBUG 12252 --- [qingxu-api] [           main] o.s.w.s.c.annotation.WebMvcConfigurer    : Default resource handling disabled
+2026-07-13T21:31:32.344+08:00 DEBUG 12252 --- [qingxu-api] [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/swagger-ui/swagger-ui*/*swagger-initializer.js, /swagger-ui/swagger-ui*/**] in 'resourceHandlerMapping'
+2026-07-13T21:31:32.465+08:00  INFO 12252 --- [qingxu-api] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-07-13T21:31:32.551+08:00 DEBUG 12252 --- [qingxu-api] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, TraceIdFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-07-13T21:31:33.254+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	c.q.q.i.a.AuthController:
+	
+2026-07-13T21:31:33.255+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	c.q.q.i.d.DepartmentController:
+	
+2026-07-13T21:31:33.255+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	c.q.q.i.f.FilePreviewController:
+	
+2026-07-13T21:31:33.256+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	c.q.q.i.f.FileController:
+	
+2026-07-13T21:31:33.256+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	c.q.q.i.k.KnowledgeDocumentController:
+	
+2026-07-13T21:31:33.257+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	c.q.q.i.k.KnowledgeGraphController:
+	
+2026-07-13T21:31:33.257+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	c.q.q.i.k.KnowledgeGraphDetailController:
+	
+2026-07-13T21:31:33.257+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	c.q.q.i.m.MenuController:
+	
+2026-07-13T21:31:33.258+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	c.q.q.i.n.NotificationController:
+	
+2026-07-13T21:31:33.258+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	c.q.q.i.p.ProtectedController:
+	
+2026-07-13T21:31:33.259+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	c.q.q.i.r.RoleController:
+	
+2026-07-13T21:31:33.260+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	c.q.q.i.u.UserController:
+	
+2026-07-13T21:31:33.261+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	o.s.b.a.w.s.e.BasicErrorController:
+	
+2026-07-13T21:31:33.262+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	o.s.w.a.OpenApiWebMvcResource:
+	
+2026-07-13T21:31:33.263+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	o.s.w.u.SwaggerWelcomeWebMvc:
+	
+2026-07-13T21:31:33.263+08:00 DEBUG 12252 --- [qingxu-api] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	o.s.w.u.SwaggerConfigResource:
+	
+2026-07-13T21:31:33.344+08:00 DEBUG 12252 --- [qingxu-api] [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-07-13T21:31:33.422+08:00 DEBUG 12252 --- [qingxu-api] [           main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-07-13T21:31:33.428+08:00  INFO 12252 --- [qingxu-api] [           main] m.e.s.MybatisPlusApplicationContextAware : Register ApplicationContext instances org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@4c550889
+2026-07-13T21:31:34.001+08:00 DEBUG 12252 --- [qingxu-api] [           main] org.springframework.web.SimpLogging      : clientOutboundChannel added SubProtocolWebSocketHandler[StompSubProtocolHandler[v10.stomp, v11.stomp, v12.stomp]]
+2026-07-13T21:31:34.002+08:00 DEBUG 12252 --- [qingxu-api] [           main] org.springframework.web.SimpLogging      : clientInboundChannel added WebSocketAnnotationMethodMessageHandler[prefixes=[/app/]]
+2026-07-13T21:31:34.003+08:00  INFO 12252 --- [qingxu-api] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2026-07-13T21:31:34.004+08:00 DEBUG 12252 --- [qingxu-api] [           main] org.springframework.web.SimpLogging      : clientInboundChannel added SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@708f4d81]
+2026-07-13T21:31:34.004+08:00 DEBUG 12252 --- [qingxu-api] [           main] org.springframework.web.SimpLogging      : brokerChannel added SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@708f4d81]
+2026-07-13T21:31:34.004+08:00  INFO 12252 --- [qingxu-api] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@708f4d81]]
+2026-07-13T21:31:34.007+08:00  INFO 12252 --- [qingxu-api] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2026-07-13T21:31:34.007+08:00 DEBUG 12252 --- [qingxu-api] [           main] org.springframework.web.SimpLogging      : clientInboundChannel added UserDestinationMessageHandler[DefaultUserDestinationResolver[prefix=/user/]]
+2026-07-13T21:31:34.008+08:00 DEBUG 12252 --- [qingxu-api] [           main] org.springframework.web.SimpLogging      : brokerChannel added UserDestinationMessageHandler[DefaultUserDestinationResolver[prefix=/user/]]
+2026-07-13T21:31:34.026+08:00  INFO 12252 --- [qingxu-api] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/'
+2026-07-13T21:31:34.180+08:00  INFO 12252 --- [qingxu-api] [           main] o.s.s.config.TaskSchedulerRouter         : More than one TaskScheduler bean exists within the context, and none is named 'taskScheduler'. Mark one of them as primary or name it 'taskScheduler' (possibly as an alias); or implement the SchedulingConfigurer interface and call ScheduledTaskRegistrar#setScheduler explicitly within the configureTasks() callback: [clientInboundChannelExecutor, clientOutboundChannelExecutor, messageBrokerTaskScheduler, heartBeatScheduler]
+2026-07-13T21:31:34.187+08:00  INFO 12252 --- [qingxu-api] [           main] c.qingxu.qingxuapi.QingxuApiApplication  : Started QingxuApiApplication in 9.209 seconds (process running for 10.086)
+2026-07-13T21:31:34.324+08:00  INFO 12252 --- [qingxu-api] [           main] c.q.q.i.p.KkFileViewLocalProcessManager  : kkFileView local service is already reachable at http://127.0.0.1:8012
+2026-07-13T21:31:35.346+08:00  INFO 12252 --- [qingxu-api] [nio-8081-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-07-13T21:31:35.346+08:00  INFO 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-07-13T21:31:35.347+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2026-07-13T21:31:35.347+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2026-07-13T21:31:35.348+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2026-07-13T21:31:35.349+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@57dd4bc9
+2026-07-13T21:31:35.350+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@6965c32
+2026-07-13T21:31:35.351+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-07-13T21:31:35.351+08:00  INFO 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2026-07-13T21:31:35.384+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /ws/info?t=1783949495266
+2026-07-13T21:31:35.384+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /ws/info?t=1783949495265
+2026-07-13T21:31:35.414+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /ws/info?t=1783949495265
+2026-07-13T21:31:35.414+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /ws/info?t=1783949495266
+2026-07-13T21:31:35.418+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/ws/info?t=1783949495265", parameters={masked}
+2026-07-13T21:31:35.418+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/ws/info?t=1783949495266", parameters={masked}
+2026-07-13T21:31:35.511+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.w.s.s.s.WebSocketHandlerMapping      : Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@65293ca5
+2026-07-13T21:31:35.511+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.w.s.s.s.WebSocketHandlerMapping      : Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@65293ca5
+2026-07-13T21:31:35.520+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.w.s.s.t.h.DefaultSockJsService       : Processing transport request: GET http://localhost:8081/ws/info?t=1783949495266
+2026-07-13T21:31:35.520+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.w.s.s.t.h.DefaultSockJsService       : Processing transport request: GET http://localhost:8081/ws/info?t=1783949495265
+2026-07-13T21:31:35.522+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-07-13T21:31:35.522+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-07-13T21:31:35.522+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:31:35.522+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:31:35.567+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /ws/642/gc5vvmhk/websocket
+2026-07-13T21:31:35.574+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /ws/642/gc5vvmhk/websocket
+2026-07-13T21:31:35.574+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/ws/642/gc5vvmhk/websocket", parameters={}
+2026-07-13T21:31:35.578+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] o.s.w.s.s.s.WebSocketHandlerMapping      : Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@65293ca5
+2026-07-13T21:31:35.580+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] o.s.w.s.s.t.h.DefaultSockJsService       : Processing transport request: GET http://localhost:8081/ws/642/gc5vvmhk/websocket
+2026-07-13T21:31:35.586+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:31:35.635+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 101 SWITCHING_PROTOCOLS
+2026-07-13T21:31:35.659+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] s.w.s.h.LoggingWebSocketHandlerDecorator : New WebSocketServerSockJsSession[id=gc5vvmhk]
+2026-07-13T21:31:35.673+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /ws/985/n2kavg1i/websocket
+2026-07-13T21:31:35.675+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /ws/985/n2kavg1i/websocket
+2026-07-13T21:31:35.675+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/ws/985/n2kavg1i/websocket", parameters={}
+2026-07-13T21:31:35.679+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-6] o.s.w.s.s.s.WebSocketHandlerMapping      : Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@65293ca5
+2026-07-13T21:31:35.681+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-6] o.s.w.s.s.t.h.DefaultSockJsService       : Processing transport request: GET http://localhost:8081/ws/985/n2kavg1i/websocket
+2026-07-13T21:31:35.681+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-6] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:31:35.682+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 101 SWITCHING_PROTOCOLS
+2026-07-13T21:31:35.688+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] org.springframework.web.SimpLogging      : Processing CONNECT user=2 session=gc5vvmhk
+2026-07-13T21:31:35.690+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-6] s.w.s.h.LoggingWebSocketHandlerDecorator : New WebSocketServerSockJsSession[id=n2kavg1i]
+2026-07-13T21:31:35.694+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] org.springframework.web.SimpLogging      : Processing CONNECT user=2 session=n2kavg1i
+2026-07-13T21:31:35.698+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] org.springframework.web.SimpLogging      : Processing SUBSCRIBE destination=/queue/permission-reload-usergc5vvmhk subscriptionId=sub-0 session=gc5vvmhk user=2 attributes[1] payload=byte[0]
+2026-07-13T21:31:35.700+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] org.springframework.web.SimpLogging      : Processing SUBSCRIBE destination=/queue/notifications-usern2kavg1i subscriptionId=sub-0 session=n2kavg1i user=2 attributes[1] payload=byte[0]
+2026-07-13T21:31:35.709+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /api/notifications/unread-count
+2026-07-13T21:31:35.711+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /api/notifications?current=1&pageSize=10
+2026-07-13T21:31:35.714+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:31:35.715+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-9] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:31:35.715+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] o.s.security.web.FilterChainProxy        : Secured GET /api/notifications/unread-count
+2026-07-13T21:31:35.715+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /api/notifications?current=1&pageSize=10
+2026-07-13T21:31:35.715+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/api/notifications/unread-count", parameters={}
+2026-07-13T21:31:35.717+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/api/notifications?current=1&pageSize=10", parameters={masked}
+2026-07-13T21:31:35.717+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.qingxu.qingxuapi.interfaces.notification.NotificationController#getUnreadNotificationCount(QingxuUserPrincipal)
+2026-07-13T21:31:35.717+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.qingxu.qingxuapi.interfaces.notification.NotificationController#getNotificationList(QingxuUserPrincipal, NotificationQuery)
+2026-07-13T21:31:35.761+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] c.q.q.i.p.m.S.countUnreadByUserId        : ==>  Preparing: select count(1) from sys_notification_recipient where user_id = ? and read_status = 'UNREAD' and deleted = false
+2026-07-13T21:31:35.775+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] c.q.q.i.p.m.S.countUnreadByUserId        : ==> Parameters: 2(Long)
+2026-07-13T21:31:35.792+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] c.q.q.i.p.m.S.countUnreadByUserId        : <==      Total: 1
+2026-07-13T21:31:35.804+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-07-13T21:31:35.809+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse[code=0, message=操作成功, data=UnreadCountResponse[count=17], traceId=a30d5439-caaa-4eeb-8ce (truncated)...]
+2026-07-13T21:31:35.824+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-07-13T21:31:35.870+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-9] q.i.p.m.S.selectNotificationPage_mpCount : ==>  Preparing: SELECT COUNT(*) AS total FROM sys_notification_recipient nr INNER JOIN sys_notification n ON n.id = nr.notification_id WHERE nr.user_id = ? AND nr.deleted = false
+2026-07-13T21:31:35.871+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-9] q.i.p.m.S.selectNotificationPage_mpCount : ==> Parameters: 2(Long)
+2026-07-13T21:31:35.880+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-9] q.i.p.m.S.selectNotificationPage_mpCount : <==      Total: 1
+2026-07-13T21:31:35.886+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-9] c.q.q.i.p.m.S.selectNotificationPage     : ==>  Preparing: select nr.id as id, n.id as notificationId, n.type as type, n.level as level, n.title as title, n.content as content, n.target_url as targetUrl, nr.read_status as readStatus, nr.read_at as readAt, n.created_at as createdAt, n.trace_id as traceId from sys_notification_recipient nr inner join sys_notification n on n.id = nr.notification_id where nr.user_id = ? and nr.deleted = false order by n.created_at desc, nr.id desc LIMIT ?
+2026-07-13T21:31:35.888+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-9] c.q.q.i.p.m.S.selectNotificationPage     : ==> Parameters: 2(Long), 10(Long)
+2026-07-13T21:31:35.894+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-9] c.q.q.i.p.m.S.selectNotificationPage     : <==      Total: 10
+2026-07-13T21:31:35.896+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-07-13T21:31:35.902+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse[code=0, message=操作成功, data=PageResponse[records=[NotificationListItemResponse(id=92, not (truncated)...]
+2026-07-13T21:31:35.916+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-07-13T21:31:50.212+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /actuator/health
+2026-07-13T21:31:50.213+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /actuator/health
+2026-07-13T21:31:50.214+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/actuator/health", parameters={}
+2026-07-13T21:31:50.214+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.s.w.h.S.SESSION_LOGGER               : No session found by id: Caching result for getSession(false) for this HttpServletRequest.
+2026-07-13T21:31:50.217+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Read "application/octet-stream" to []
+2026-07-13T21:31:50.293+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/vnd.spring-boot.actuator.v3+json', given [*/*] and supported [application/vnd.spring-boot.actuator.v3+json, application/vnd.spring-boot.actuator.v2+json, application/json]
+2026-07-13T21:31:50.299+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [org.springframework.boot.actuate.health.SystemHealth@491b73ab]
+2026-07-13T21:31:50.300+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-07-13T21:31:50.301+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.s.w.h.S.SESSION_LOGGER               : No session found by id: Caching result for getSession(false) for this HttpServletRequest.
+2026-07-13T21:31:50.301+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.s.w.h.S.SESSION_LOGGER               : No session found by id: Caching result for getSession(false) for this HttpServletRequest.
+2026-07-13T21:31:50.303+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.s.w.h.S.SESSION_LOGGER               : No session found by id: Caching result for getSession(false) for this HttpServletRequest.
+2026-07-13T21:31:50.303+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-07-13T21:32:33.983+08:00  INFO 12252 --- [qingxu-api] [essageBroker-10] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[2 current WS(2)-HttpStream(0)-HttpPoll(0), 2 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(2)-CONNECTED(2)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[unknown], outboundChannel[unknown], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 1, completed tasks = 12]
+2026-07-13T21:33:14.071+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] s.w.s.s.t.s.WebSocketServerSockJsSession : Closing SockJS session gc5vvmhk with CloseStatus[code=1002, reason=null]
+2026-07-13T21:33:14.071+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] s.w.s.s.t.s.WebSocketServerSockJsSession : Closing SockJS session n2kavg1i with CloseStatus[code=1002, reason=null]
+2026-07-13T21:33:14.072+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] o.s.w.s.adapter.NativeWebSocketSession   : Closing StandardWebSocketSession[id=b34f7ece-4916-cf91-a46f-e6b222e293b2, uri=ws://localhost:8081/ws/642/gc5vvmhk/websocket]
+2026-07-13T21:33:14.072+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] o.s.w.s.adapter.NativeWebSocketSession   : Closing StandardWebSocketSession[id=7f929ee4-3fc6-c690-e8a9-1ad0ee8bfc03, uri=ws://localhost:8081/ws/985/n2kavg1i/websocket]
+2026-07-13T21:33:14.073+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] s.w.s.h.LoggingWebSocketHandlerDecorator : WebSocketServerSockJsSession[id=gc5vvmhk] closed with CloseStatus[code=1002, reason=null]
+2026-07-13T21:33:14.073+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] s.w.s.h.LoggingWebSocketHandlerDecorator : WebSocketServerSockJsSession[id=n2kavg1i] closed with CloseStatus[code=1002, reason=null]
+2026-07-13T21:33:14.073+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] o.s.w.s.m.SubProtocolWebSocketHandler    : Clearing session gc5vvmhk
+2026-07-13T21:33:14.073+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] o.s.w.s.m.SubProtocolWebSocketHandler    : Clearing session n2kavg1i
+2026-07-13T21:33:14.074+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] org.springframework.web.SimpLogging      : Processing DISCONNECT session=gc5vvmhk
+2026-07-13T21:33:14.075+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] o.s.w.s.m.SubProtocolWebSocketHandler    : No session for GenericMessage [payload=byte[0], headers={simpMessageType=HEARTBEAT, simpUser=StompUserPrincipal[name=2], simpSessionId=gc5vvmhk}]
+2026-07-13T21:33:14.075+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] org.springframework.web.SimpLogging      : Processing DISCONNECT session=n2kavg1i
+2026-07-13T21:33:14.075+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] o.s.w.s.m.SubProtocolWebSocketHandler    : No session for GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT_ACK, simpDisconnectMessage=GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT, stompCommand=DISCONNECT, simpSessionAttributes={org.springframework.messaging.simp.SimpAttributes.COMPLETED=true, userId=2}, simpUser=StompUserPrincipal[name=2], simpSessionId=gc5vvmhk}], simpUser=StompUserPrincipal[name=2], simpSessionId=gc5vvmhk}]
+2026-07-13T21:33:14.076+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] o.s.w.s.m.SubProtocolWebSocketHandler    : No session for GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT_ACK, simpDisconnectMessage=GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT, stompCommand=DISCONNECT, simpSessionAttributes={org.springframework.messaging.simp.SimpAttributes.COMPLETED=true, userId=2}, simpUser=StompUserPrincipal[name=2], simpSessionId=n2kavg1i}], simpUser=StompUserPrincipal[name=2], simpSessionId=n2kavg1i}]
+2026-07-13T21:33:19.275+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /ws/info?t=1783949599266
+2026-07-13T21:33:19.277+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /ws/info?t=1783949599266
+2026-07-13T21:33:19.278+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/ws/info?t=1783949599266", parameters={masked}
+2026-07-13T21:33:19.278+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /ws/info?t=1783949599267
+2026-07-13T21:33:19.278+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /ws/info?t=1783949599267
+2026-07-13T21:33:19.280+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/ws/info?t=1783949599267", parameters={masked}
+2026-07-13T21:33:19.280+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-4] o.s.w.s.s.s.WebSocketHandlerMapping      : Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@65293ca5
+2026-07-13T21:33:19.280+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-4] o.s.w.s.s.t.h.DefaultSockJsService       : Processing transport request: GET http://localhost:8081/ws/info?t=1783949599266
+2026-07-13T21:33:19.282+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-07-13T21:33:19.282+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-4] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:33:19.284+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-5] o.s.w.s.s.s.WebSocketHandlerMapping      : Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@65293ca5
+2026-07-13T21:33:19.284+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-5] o.s.w.s.s.t.h.DefaultSockJsService       : Processing transport request: GET http://localhost:8081/ws/info?t=1783949599267
+2026-07-13T21:33:19.285+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-07-13T21:33:19.285+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-5] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:33:19.304+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /ws/401/nepxki3y/websocket
+2026-07-13T21:33:19.307+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] o.s.security.web.FilterChainProxy        : Secured GET /ws/401/nepxki3y/websocket
+2026-07-13T21:33:19.307+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/ws/401/nepxki3y/websocket", parameters={}
+2026-07-13T21:33:19.310+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] o.s.w.s.s.s.WebSocketHandlerMapping      : Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@65293ca5
+2026-07-13T21:33:19.311+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] o.s.w.s.s.t.h.DefaultSockJsService       : Processing transport request: GET http://localhost:8081/ws/401/nepxki3y/websocket
+2026-07-13T21:33:19.312+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:33:19.313+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 101 SWITCHING_PROTOCOLS
+2026-07-13T21:33:19.320+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-8] s.w.s.h.LoggingWebSocketHandlerDecorator : New WebSocketServerSockJsSession[id=nepxki3y]
+2026-07-13T21:33:19.323+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] org.springframework.web.SimpLogging      : Processing CONNECT user=2 session=nepxki3y
+2026-07-13T21:33:19.329+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] org.springframework.web.SimpLogging      : Processing SUBSCRIBE destination=/queue/notifications-usernepxki3y subscriptionId=sub-0 session=nepxki3y user=2 attributes[1] payload=byte[0]
+2026-07-13T21:33:19.338+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /ws/419/1nkgrno0/websocket
+2026-07-13T21:33:19.339+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /ws/419/1nkgrno0/websocket
+2026-07-13T21:33:19.340+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/ws/419/1nkgrno0/websocket", parameters={}
+2026-07-13T21:33:19.340+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /api/notifications/unread-count
+2026-07-13T21:33:19.342+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.w.s.s.s.WebSocketHandlerMapping      : Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@65293ca5
+2026-07-13T21:33:19.343+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:33:19.343+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /api/notifications?current=1&pageSize=10
+2026-07-13T21:33:19.343+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.w.s.s.t.h.DefaultSockJsService       : Processing transport request: GET http://localhost:8081/ws/419/1nkgrno0/websocket
+2026-07-13T21:33:19.343+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /api/notifications/unread-count
+2026-07-13T21:33:19.344+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:33:19.344+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/notifications/unread-count", parameters={}
+2026-07-13T21:33:19.345+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.qingxu.qingxuapi.interfaces.notification.NotificationController#getUnreadNotificationCount(QingxuUserPrincipal)
+2026-07-13T21:33:19.346+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 101 SWITCHING_PROTOCOLS
+2026-07-13T21:33:19.346+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:33:19.346+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] c.q.q.i.p.m.S.countUnreadByUserId        : ==>  Preparing: select count(1) from sys_notification_recipient where user_id = ? and read_status = 'UNREAD' and deleted = false
+2026-07-13T21:33:19.347+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /api/notifications?current=1&pageSize=10
+2026-07-13T21:33:19.347+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] c.q.q.i.p.m.S.countUnreadByUserId        : ==> Parameters: 2(Long)
+2026-07-13T21:33:19.347+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/api/notifications?current=1&pageSize=10", parameters={masked}
+2026-07-13T21:33:19.348+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.qingxu.qingxuapi.interfaces.notification.NotificationController#getNotificationList(QingxuUserPrincipal, NotificationQuery)
+2026-07-13T21:33:19.348+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] c.q.q.i.p.m.S.countUnreadByUserId        : <==      Total: 1
+2026-07-13T21:33:19.350+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-07-13T21:33:19.350+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse[code=0, message=操作成功, data=UnreadCountResponse[count=17], traceId=6c932bb4-61d3-40db-9f3 (truncated)...]
+2026-07-13T21:33:19.352+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] s.w.s.h.LoggingWebSocketHandlerDecorator : New WebSocketServerSockJsSession[id=1nkgrno0]
+2026-07-13T21:33:19.356+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-07-13T21:33:19.356+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] q.i.p.m.S.selectNotificationPage_mpCount : ==>  Preparing: SELECT COUNT(*) AS total FROM sys_notification_recipient nr INNER JOIN sys_notification n ON n.id = nr.notification_id WHERE nr.user_id = ? AND nr.deleted = false
+2026-07-13T21:33:19.357+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] q.i.p.m.S.selectNotificationPage_mpCount : ==> Parameters: 2(Long)
+2026-07-13T21:33:19.358+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] q.i.p.m.S.selectNotificationPage_mpCount : <==      Total: 1
+2026-07-13T21:33:19.359+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] c.q.q.i.p.m.S.selectNotificationPage     : ==>  Preparing: select nr.id as id, n.id as notificationId, n.type as type, n.level as level, n.title as title, n.content as content, n.target_url as targetUrl, nr.read_status as readStatus, nr.read_at as readAt, n.created_at as createdAt, n.trace_id as traceId from sys_notification_recipient nr inner join sys_notification n on n.id = nr.notification_id where nr.user_id = ? and nr.deleted = false order by n.created_at desc, nr.id desc LIMIT ?
+2026-07-13T21:33:19.359+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] c.q.q.i.p.m.S.selectNotificationPage     : ==> Parameters: 2(Long), 10(Long)
+2026-07-13T21:33:19.360+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] org.springframework.web.SimpLogging      : Processing CONNECT user=2 session=1nkgrno0
+2026-07-13T21:33:19.363+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] c.q.q.i.p.m.S.selectNotificationPage     : <==      Total: 10
+2026-07-13T21:33:19.364+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-07-13T21:33:19.364+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse[code=0, message=操作成功, data=PageResponse[records=[NotificationListItemResponse(id=92, not (truncated)...]
+2026-07-13T21:33:19.368+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] org.springframework.web.SimpLogging      : Processing SUBSCRIBE destination=/queue/permission-reload-user1nkgrno0 subscriptionId=sub-0 session=1nkgrno0 user=2 attributes[1] payload=byte[0]
+2026-07-13T21:33:19.371+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-07-13T21:33:20.589+08:00 DEBUG 12252 --- [qingxu-api] [essageBroker-17] o.s.w.s.s.t.h.DefaultSockJsService       : Closed 2 sessions: [n2kavg1i, gc5vvmhk]
+2026-07-13T21:35:14.158+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] s.w.s.s.t.s.WebSocketServerSockJsSession : Closing SockJS session 1nkgrno0 with CloseStatus[code=1002, reason=null]
+2026-07-13T21:35:14.158+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] s.w.s.s.t.s.WebSocketServerSockJsSession : Closing SockJS session nepxki3y with CloseStatus[code=1002, reason=null]
+2026-07-13T21:35:14.159+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] o.s.w.s.adapter.NativeWebSocketSession   : Closing StandardWebSocketSession[id=311c8077-10f3-508f-658b-5af3fc58eb2e, uri=ws://localhost:8081/ws/419/1nkgrno0/websocket]
+2026-07-13T21:35:14.159+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] o.s.w.s.adapter.NativeWebSocketSession   : Closing StandardWebSocketSession[id=ed734d9f-ee39-3181-bf07-3b866c056d3b, uri=ws://localhost:8081/ws/401/nepxki3y/websocket]
+2026-07-13T21:35:14.159+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] s.w.s.h.LoggingWebSocketHandlerDecorator : WebSocketServerSockJsSession[id=1nkgrno0] closed with CloseStatus[code=1002, reason=null]
+2026-07-13T21:35:14.159+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] o.s.w.s.m.SubProtocolWebSocketHandler    : Clearing session 1nkgrno0
+2026-07-13T21:35:14.159+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] s.w.s.h.LoggingWebSocketHandlerDecorator : WebSocketServerSockJsSession[id=nepxki3y] closed with CloseStatus[code=1002, reason=null]
+2026-07-13T21:35:14.160+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] o.s.w.s.m.SubProtocolWebSocketHandler    : Clearing session nepxki3y
+2026-07-13T21:35:14.160+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] o.s.w.s.m.SubProtocolWebSocketHandler    : No session for GenericMessage [payload=byte[0], headers={simpMessageType=HEARTBEAT, simpUser=StompUserPrincipal[name=2], simpSessionId=1nkgrno0}]
+2026-07-13T21:35:14.160+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] org.springframework.web.SimpLogging      : Processing DISCONNECT session=1nkgrno0
+2026-07-13T21:35:14.161+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] org.springframework.web.SimpLogging      : Processing DISCONNECT session=nepxki3y
+2026-07-13T21:35:14.161+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] o.s.w.s.m.SubProtocolWebSocketHandler    : No session for GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT_ACK, simpDisconnectMessage=GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT, stompCommand=DISCONNECT, simpSessionAttributes={org.springframework.messaging.simp.SimpAttributes.COMPLETED=true, userId=2}, simpUser=StompUserPrincipal[name=2], simpSessionId=1nkgrno0}], simpUser=StompUserPrincipal[name=2], simpSessionId=1nkgrno0}]
+2026-07-13T21:35:14.161+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] o.s.w.s.m.SubProtocolWebSocketHandler    : No session for GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT_ACK, simpDisconnectMessage=GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT, stompCommand=DISCONNECT, simpSessionAttributes={org.springframework.messaging.simp.SimpAttributes.COMPLETED=true, userId=2}, simpUser=StompUserPrincipal[name=2], simpSessionId=nepxki3y}], simpUser=StompUserPrincipal[name=2], simpSessionId=nepxki3y}]
+2026-07-13T21:35:19.284+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /ws/info?t=1783949719270
+2026-07-13T21:35:19.284+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /ws/info?t=1783949719271
+2026-07-13T21:35:19.295+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /ws/info?t=1783949719270
+2026-07-13T21:35:19.295+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /ws/info?t=1783949719271
+2026-07-13T21:35:19.296+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/ws/info?t=1783949719270", parameters={masked}
+2026-07-13T21:35:19.296+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/ws/info?t=1783949719271", parameters={masked}
+2026-07-13T21:35:19.299+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.w.s.s.s.WebSocketHandlerMapping      : Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@65293ca5
+2026-07-13T21:35:19.299+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-6] o.s.w.s.s.s.WebSocketHandlerMapping      : Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@65293ca5
+2026-07-13T21:35:19.300+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.w.s.s.t.h.DefaultSockJsService       : Processing transport request: GET http://localhost:8081/ws/info?t=1783949719270
+2026-07-13T21:35:19.300+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-6] o.s.w.s.s.t.h.DefaultSockJsService       : Processing transport request: GET http://localhost:8081/ws/info?t=1783949719271
+2026-07-13T21:35:19.300+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-07-13T21:35:19.300+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-07-13T21:35:19.301+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-1] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:35:19.301+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-6] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:35:19.326+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /ws/252/vtm0ytw5/websocket
+2026-07-13T21:35:19.327+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-7] o.s.security.web.FilterChainProxy        : Secured GET /ws/252/vtm0ytw5/websocket
+2026-07-13T21:35:19.328+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/ws/252/vtm0ytw5/websocket", parameters={}
+2026-07-13T21:35:19.330+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-7] o.s.w.s.s.s.WebSocketHandlerMapping      : Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@65293ca5
+2026-07-13T21:35:19.331+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-7] o.s.w.s.s.t.h.DefaultSockJsService       : Processing transport request: GET http://localhost:8081/ws/252/vtm0ytw5/websocket
+2026-07-13T21:35:19.331+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-7] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:35:19.333+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 101 SWITCHING_PROTOCOLS
+2026-07-13T21:35:19.338+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-7] s.w.s.h.LoggingWebSocketHandlerDecorator : New WebSocketServerSockJsSession[id=vtm0ytw5]
+2026-07-13T21:35:19.342+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] org.springframework.web.SimpLogging      : Processing CONNECT user=2 session=vtm0ytw5
+2026-07-13T21:35:19.348+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] org.springframework.web.SimpLogging      : Processing SUBSCRIBE destination=/queue/permission-reload-uservtm0ytw5 subscriptionId=sub-0 session=vtm0ytw5 user=2 attributes[1] payload=byte[0]
+2026-07-13T21:35:19.366+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /ws/344/fhu4p1xu/websocket
+2026-07-13T21:35:19.367+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /ws/344/fhu4p1xu/websocket
+2026-07-13T21:35:19.368+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/ws/344/fhu4p1xu/websocket", parameters={}
+2026-07-13T21:35:19.371+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-5] o.s.w.s.s.s.WebSocketHandlerMapping      : Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@65293ca5
+2026-07-13T21:35:19.371+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-5] o.s.w.s.s.t.h.DefaultSockJsService       : Processing transport request: GET http://localhost:8081/ws/344/fhu4p1xu/websocket
+2026-07-13T21:35:19.371+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-5] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:35:19.372+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 101 SWITCHING_PROTOCOLS
+2026-07-13T21:35:19.377+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-5] s.w.s.h.LoggingWebSocketHandlerDecorator : New WebSocketServerSockJsSession[id=fhu4p1xu]
+2026-07-13T21:35:19.382+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-2] org.springframework.web.SimpLogging      : Processing CONNECT user=2 session=fhu4p1xu
+2026-07-13T21:35:19.387+08:00 DEBUG 12252 --- [qingxu-api] [ket-heartbeat-1] org.springframework.web.SimpLogging      : Processing SUBSCRIBE destination=/queue/notifications-userfhu4p1xu subscriptionId=sub-0 session=fhu4p1xu user=2 attributes[1] payload=byte[0]
+2026-07-13T21:35:19.395+08:00 DEBUG 12252 --- [qingxu-api] [io-8081-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /api/notifications/unread-count
+2026-07-13T21:35:19.397+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /api/notifications?current=1&pageSize=10
+2026-07-13T21:35:19.397+08:00 DEBUG 12252 --- [qingxu-api] [io-8081-exec-10] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:35:19.398+08:00 DEBUG 12252 --- [qingxu-api] [io-8081-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /api/notifications/unread-count
+2026-07-13T21:35:19.399+08:00 DEBUG 12252 --- [qingxu-api] [io-8081-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/api/notifications/unread-count", parameters={}
+2026-07-13T21:35:19.399+08:00 DEBUG 12252 --- [qingxu-api] [io-8081-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.qingxu.qingxuapi.interfaces.notification.NotificationController#getUnreadNotificationCount(QingxuUserPrincipal)
+2026-07-13T21:35:19.400+08:00 DEBUG 12252 --- [qingxu-api] [io-8081-exec-10] c.q.q.i.p.m.S.countUnreadByUserId        : ==>  Preparing: select count(1) from sys_notification_recipient where user_id = ? and read_status = 'UNREAD' and deleted = false
+2026-07-13T21:35:19.400+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] w.c.HttpSessionSecurityContextRepository : Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=com.qingxu.qingxuapi.infrastructure.security.QingxuUserPrincipal@3d, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[system:role:assignPermissions, system:user:create, system:user:list, system:role:create, system:menu:create, system:department:create, kb:knowledgelist:list, kb:documentlist:list, system:department:list, system:department:update, system:user:update, system:menu:update, system:role:update, system:menu:delete, system:role:delete, system:user:delete, system:role:list, system:department:delete, system:user:resetPassword, system:menu:list, system:user:assignRole, system:user:export, system:user:toggleStatus]]]
+2026-07-13T21:35:19.401+08:00 DEBUG 12252 --- [qingxu-api] [io-8081-exec-10] c.q.q.i.p.m.S.countUnreadByUserId        : ==> Parameters: 2(Long)
+2026-07-13T21:35:19.401+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /api/notifications?current=1&pageSize=10
+2026-07-13T21:35:19.402+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/api/notifications?current=1&pageSize=10", parameters={masked}
+2026-07-13T21:35:19.402+08:00 DEBUG 12252 --- [qingxu-api] [io-8081-exec-10] c.q.q.i.p.m.S.countUnreadByUserId        : <==      Total: 1
+2026-07-13T21:35:19.403+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.qingxu.qingxuapi.interfaces.notification.NotificationController#getNotificationList(QingxuUserPrincipal, NotificationQuery)
+2026-07-13T21:35:19.403+08:00 DEBUG 12252 --- [qingxu-api] [io-8081-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-07-13T21:35:19.404+08:00 DEBUG 12252 --- [qingxu-api] [io-8081-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse[code=0, message=操作成功, data=UnreadCountResponse[count=17], traceId=0e05bb38-27f5-45ee-8d3 (truncated)...]
+2026-07-13T21:35:19.407+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] q.i.p.m.S.selectNotificationPage_mpCount : ==>  Preparing: SELECT COUNT(*) AS total FROM sys_notification_recipient nr INNER JOIN sys_notification n ON n.id = nr.notification_id WHERE nr.user_id = ? AND nr.deleted = false
+2026-07-13T21:35:19.408+08:00 DEBUG 12252 --- [qingxu-api] [io-8081-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-07-13T21:35:19.408+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] q.i.p.m.S.selectNotificationPage_mpCount : ==> Parameters: 2(Long)
+2026-07-13T21:35:19.410+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] q.i.p.m.S.selectNotificationPage_mpCount : <==      Total: 1
+2026-07-13T21:35:19.411+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] c.q.q.i.p.m.S.selectNotificationPage     : ==>  Preparing: select nr.id as id, n.id as notificationId, n.type as type, n.level as level, n.title as title, n.content as content, n.target_url as targetUrl, nr.read_status as readStatus, nr.read_at as readAt, n.created_at as createdAt, n.trace_id as traceId from sys_notification_recipient nr inner join sys_notification n on n.id = nr.notification_id where nr.user_id = ? and nr.deleted = false order by n.created_at desc, nr.id desc LIMIT ?
+2026-07-13T21:35:19.411+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] c.q.q.i.p.m.S.selectNotificationPage     : ==> Parameters: 2(Long), 10(Long)
+2026-07-13T21:35:19.414+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] c.q.q.i.p.m.S.selectNotificationPage     : <==      Total: 10
+2026-07-13T21:35:19.414+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json, application/yaml]
+2026-07-13T21:35:19.415+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Writing [ApiResponse[code=0, message=操作成功, data=PageResponse[records=[NotificationListItemResponse(id=92, not (truncated)...]
+2026-07-13T21:35:19.419+08:00 DEBUG 12252 --- [qingxu-api] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-07-13T21:35:20.585+08:00 DEBUG 12252 --- [qingxu-api] [MessageBroker-3] o.s.w.s.s.t.h.DefaultSockJsService       : Closed 2 sessions: [nepxki3y, 1nkgrno0]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  07:06 min
+[INFO] Finished at: 2026-07-13T21:38:22+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.5.3:run (default-cli) on project qingxu-api: Process terminated with exit code: 1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

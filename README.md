@@ -326,9 +326,9 @@ qingxu:
 qingxu:
   security:
     public-paths:
-      - /api/auth/captcha
-      - /api/auth/login
-      - /api/auth/register
+      - /auth/captcha
+      - /auth/login
+      - /auth/register
       - /actuator/health
       - /v3/api-docs/**
       - /swagger-ui/**
@@ -455,7 +455,7 @@ logging:
 ## 前端接入要点
 
 - 所有需要登录的接口必须带 Cookie：`withCredentials: true`。
-- 部门接口 `/api/department/**` 已启用鉴权，未登录会返回 `401`，无权限会返回 `403`。
+- 部门接口 `/department/**` 已启用鉴权，未登录会返回 `401`，无权限会返回 `403`。
 - 生产环境前端域名必须加入 `QINGXU_WEB_ORIGIN` 或 `qingxu.security.cors.allowed-origins`。
 - 如果前后端跨站部署，后端 Cookie 需要 `SameSite=None`、`Secure=true`，前端必须使用 HTTPS。
 - WebSocket 地址默认是 `/ws`，订阅路径保持 `/user/queue/...`。

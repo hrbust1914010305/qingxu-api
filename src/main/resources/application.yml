@@ -31,14 +31,16 @@ server:
 qingxu:
   security:
     public-paths:
-      - /api/auth/captcha
-      - /api/auth/login
-      - /api/auth/register
+      - /auth/captcha
+      - /auth/login
+      - /auth/register
       - /actuator/health
       - /v3/api-docs/**
       - /swagger-ui/**
       - /ws/**
-      - /api/file-preview/source/**
+      - /file-preview/source/**
+      - /knowledge/progress/report
+      - /knowledge/graph-progress/report
     cors:
       allowed-origins:
         - http://localhost:5173
@@ -110,7 +112,7 @@ qingxu:
   preview:
     enabled: true
     kk-file-view-base-url: http://127.0.0.1:8012
-    public-base-url: http://127.0.0.1:8081/api
+    public-base-url: http://127.0.0.1:8081
     token-ttl: 10m
     local-service:
       auto-start: true
@@ -147,6 +149,15 @@ qingxu:
       - svg
       - mp3
       - mp4
+  knowledge:
+    ai:
+      enabled: ${QINGXU_KNOWLEDGE_AI_ENABLED:true}
+      base-url: ${QINGXU_KNOWLEDGE_AI_BASE_URL:http://127.0.0.1:8002}
+      start-path: ${QINGXU_KNOWLEDGE_AI_START_PATH:/rag/index}
+      graph-start-path: ${QINGXU_KNOWLEDGE_AI_GRAPH_START_PATH:/rag/graph/build}
+      graph-status-path: ${QINGXU_KNOWLEDGE_AI_GRAPH_STATUS_PATH:/rag/graph/status/{graphJobId}}
+      cancel-path: ${QINGXU_KNOWLEDGE_AI_CANCEL_PATH:/rag/index/cancel}
+      callback-token: ${QINGXU_KNOWLEDGE_AI_CALLBACK_TOKEN:dev-internal-token}
   session:
     timeout: 2h
     redis-namespace: spring:session:qingxu
@@ -180,3 +191,5 @@ springdoc:
 logging:
   level:
     com.qingxu.qingxuapi: info
+
+
